@@ -7,7 +7,7 @@ from nobinalo.common.data import badwords
 def BadwordValidator(value):
     if value in badwords:
         raise ValidationError(
-            _('Username \'%(value)s\' is not acceptable.'),
+            _('\'%(value)s\' is not acceptable handle.'),
             params={'value': value},
         )
 
