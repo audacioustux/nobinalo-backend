@@ -3,6 +3,8 @@ from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
 )
 from django.core.mail import send_mail
+from django.contrib.postgres.fields import JSONField
+from django.core.cache import cache
 from .validators import RegexHandleValidator, BadwordValidator
 import hashlib
 
@@ -54,15 +56,42 @@ class UserManager(BaseUserManager):
         )
 
 
+class EmailManager(models.Manager):
+    def create_token(self, email, secret=None):
+        
+
+
+class Email(models.Model):
+    email = models.EmailField(unique=True)
+    # key
+    jwt_secret = models.CharField(max_length=255)
+    jwt_payload = JSONField()
+    small_key = models.CharField(max_length=6)
+    # TODO: add ip field, timestamp
+    objects = EmailManager()
+
+
+class Phone(models.Model):
+    number = models.CharField(max_length=20, unique=True)
+    # TODO: with NumberField()
+    small_key = models.CharField(max_length=6)
+    # TODO: add timestamp
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     handle = models.CharField(
         max_length=64,
         unique=True,
         validators=[RegexHandleValidator, BadwordValidator]
     )
-    email = models.EmailField(
-        unique=True,
-    )
+    email = models.EmailField()
+    is_email_verified = models.BooleanField()
+    other_emails = models.ForeignKey(Email)
+
+    phone_no = models.CharField(max_length=20)
+    is_phone_no_verified = models.BooleanField()
+    other_phone_no = models.ForeignKey(Phone)
+
     full_name = models.CharField(max_length=128)
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -75,7 +104,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         null=True
     )
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    # TODO: change default to False later
     is_staff = models.BooleanField(
         default=False
     )
@@ -97,3 +127,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = "user"
         verbose_name_plural = "users"
+        unique_together = (
+            ('email', 'is_email_verified'),
+            ('phone_no', 'is_phone_no_verified')
+        )
