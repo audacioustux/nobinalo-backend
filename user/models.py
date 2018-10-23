@@ -20,22 +20,23 @@ class UserManager(BaseUserManager):
             self,
             full_name,
             handle,
-            email,
-            phone_no,
             password,
+            email=None,
+            phone_no=None,
             **kwargs
     ):
         if email:
             email = self.normalize_email(email)
-        user = self.model(
-            handle=handle, email=email, full_name=full_name, phone_no=phone_no, **kwargs
+        user_instance = self.model(
+            handle=handle, full_name=full_name, **kwargs
         )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        user_instance.set_password(password)
+        # email_instance = EmailAddress(email=email, )
+        user_instance.save(using=self._db)
+        return user_instance
 
     def create_user(
-            self, full_name, email=None, phone_no=None, handle=None, password=None, verify=True, **kwargs
+            self, full_name, handle=None, email=None, phone_no=None, password=None, **kwargs
     ):
         if not email and not phone_no:
             raise ValueError('Email or Phone No. must be given!')
@@ -48,10 +49,10 @@ class UserManager(BaseUserManager):
         kwargs.setdefault('is_staff', False)
         kwargs.setdefault('is_superuser', False)
         return self._create_user(
-            full_name, email, phone_no, handle, **kwargs
+            full_name, handle, email, phone_no, password, **kwargs
         )
 
-    def create_superuser(self, full_name, email, phone_no, handle, password, **kwargs):
+    def create_superuser(self, handle, full_name, password, **kwargs):
         kwargs.setdefault('is_staff', True)
         kwargs.setdefault('is_superuser', True)
 
@@ -61,7 +62,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(
-            full_name, email, phone_no, handle, password, **kwargs
+            full_name, handle, password, **kwargs
         )
 
 
@@ -84,14 +85,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True
     )
     is_active = models.BooleanField(default=True)
-    # TODO: change default to False later
     is_staff = models.BooleanField(
         default=False
     )
 
-    _contact_via = models.ForeignKey(ContentType, on_delete=models.PROTECT)
-    _contact_id = models.PositiveIntegerField()
-    primary_contact = GenericForeignKey('_contact_via', '_contact_id')
+    # _all_contact_media = models.Q(app_label='user', model='emailaddress') | models.Q(app_label='app', model='phonenumber')
+    # _contact_via = models.ForeignKey(ContentType, on_delete=models.PROTECT, limit_choices_to=_all_contact_media)
+    # _contact_id = models.PositiveIntegerField()
+    # primary_contact = GenericForeignKey('_contact_via', '_contact_id')
 
     USERNAME_FIELD = 'handle'
     REQUIRED_FIELDS = ['full_name', ]
@@ -111,7 +112,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class EmailAddress(models.Model):
     email = models.EmailField(unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_primary = models.BooleanField(default=False)
     for_digest = models.BooleanField(default=False)
     for_recovery = models.BooleanField(default=True)
     public = models.BooleanField(default=False)
@@ -120,12 +122,18 @@ class EmailAddress(models.Model):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-class EmailConfirmation(models.Model):
-    email = models.OneToOneField(EmailAddress, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
-    numeric_key = models.PositiveIntegerField()
-    is_numeric_key_exp = models.BooleanField()
-    long_key = models.CharField(max_length=48)
+class SignUpEmailAddress(models.Model):
+    user = models.OneToOneField(User, blank=True, null=True)
+    email = models.EmailField(unique=True)
+    key = models.IntegerField(max_length=6)
+
+# class EmailConfirmation(models.Model):
+#     email = models.OneToOneField(EmailAddress, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+#     created = models.DateTimeField(auto_now_add=True)
+#     numeric_key = models.PositiveIntegerField()
+#     is_numeric_key_exp = models.BooleanField()
+#     long_key = models.CharField(max_length=48)
 
 # class EmailAddress(models.Model):
 #     email = models.EmailField(unique=True)
