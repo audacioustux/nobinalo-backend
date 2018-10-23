@@ -11,6 +11,7 @@ import string
 import hashlib
 from django.db.models import ProtectedError, signals
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.postgres.fields import JSONField
 
 
 class UserManager(BaseUserManager):
@@ -116,17 +117,48 @@ class EmailAddress(models.Model):
     is_primary = models.BooleanField(default=False)
     for_digest = models.BooleanField(default=False)
     for_recovery = models.BooleanField(default=True)
-    public = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=False)
 
     def send(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
 class SignUpEmailAddress(models.Model):
-    user = models.OneToOneField(User, blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
-    key = models.IntegerField(max_length=6)
 
+
+class EmailVerification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.EmailField()
+    key = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('user', 'email')
+
+
+class PhoneNumber(models.Model):
+    number = models.CharField(max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    for_auth = models.BooleanField()
+    is_primary = models.BooleanField(default=False)
+    for_digest = models.BooleanField(default=False)
+    for_recovery = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=False)
+    text_limit = models.IntegerField(default=-1)
+    when_to_text = JSONField()
+
+
+class SignUpPhoneNo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_no = models.CharField(max_length=20)
+
+
+class PhoneNoVerification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    phone_no = models.CharField(max_length=20)
+    key = models.CharField(max_length=8)
+    
 # class EmailConfirmation(models.Model):
 #     email = models.OneToOneField(EmailAddress, on_delete=models.CASCADE)
 #     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
