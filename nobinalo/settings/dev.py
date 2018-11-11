@@ -1,9 +1,10 @@
 from .base import *
 
 DEBUG = True
+ALLOWED_HOSTS = ['*']
 
 if DEBUG:
-    INTERNAL_IPS = ('127.0.0.1',)
+    INTERNAL_IPS = ('127.0.0.1','192.168.0.104')
     MIDDLEWARE += (
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     )
