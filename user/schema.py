@@ -11,13 +11,18 @@ class UserNode(DjangoObjectType):
     class Meta:
         model = User
         interfaces = (graphene.relay.Node,)
+        exclude_fields = ('password', )
+
+#
+# class CanLogin(graphene.ObjectType):
+#     can_login = graphene
 
 
 class Query(graphene.ObjectType):
     whoami = graphene.Field(UserNode)
 
-    @login_required
     def resolve_whoami(self, info):
-        print(info.context.session)
-        info.context.set_cookie("sessionid", "y2m0jpbn9jfczcc9xgikgua5")
-        return info.context.user
+        if info.context.user.is_authenticated:
+            return info.context.user
+        else:
+            raise ValueError("User Not LoggedIn!")
