@@ -4,3 +4,5 @@ __pycache__/
 .directory
 *.py[cod]
 migrations/
+.*
+static/
