@@ -108,7 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend'
+    'user.backends.EmailBackend',
+    'user.backends.PhoneNumberBackend',
+    'user.backends.HandleBackend'
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -128,3 +130,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, 'build', 'root')
 
+LOGIN_REDIRECT_URL = "user:login"

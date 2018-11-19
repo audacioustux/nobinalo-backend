@@ -105,7 +105,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class EmailAddress(models.Model):
     email = models.EmailField(unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name="emails")
     is_primary = TrueBooleanField()
     for_digest = models.BooleanField(default=False)
     for_recovery = models.BooleanField(default=True)
