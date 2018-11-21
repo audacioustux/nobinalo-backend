@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from graphene_django.views import GraphQLView
-from django.views.decorators.csrf import csrf_exempt
-from . import views
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),
@@ -34,5 +34,5 @@ if settings.DEBUG:
     ]
 
 urlpatterns += [
-    re_path(r'', views.catchall)
+    re_path(r'', ensure_csrf_cookie(TemplateView.as_view(template_name='index.html')))
 ]

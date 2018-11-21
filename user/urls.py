@@ -1,8 +1,12 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 app_name = 'user'
 
 urlpatterns = [
-    path('login/<path:next>', views.login_view, name='login')
+    path('login/', views.login_view, name='login'),
+    path('login/?next=<path:next>/', views.login_view, name='login_next'),
+    # path('add_account', views.add_account_view, name='add_account'),
+    path('logout/', views.logout_view, name='logout'),
+    path('test/', views.test, name='test'),
 ]

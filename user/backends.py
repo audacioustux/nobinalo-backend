@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 
 
 class HandleBackend(ModelBackend):
-    def authenticate(self, request, username=None, handle=None, password=None):
+    def authenticate(self, request, username=None, handle=None, password=None, **kwargs):
         if not handle:
             if username:
                 handle = username
@@ -14,7 +14,7 @@ class HandleBackend(ModelBackend):
 
 
 class PhoneNumberBackend(ModelBackend):
-    def authenticate(self, request, username=None, phone_no=None, password=None):
+    def authenticate(self, request, username=None, phone_no=None, password=None, **kwargs):
         # For compatibility with unchanged forms
         if not phone_no:
             if username:
@@ -47,7 +47,7 @@ class PhoneNumberBackend(ModelBackend):
 
 
 class EmailBackend(ModelBackend):
-    def authenticate(self, request, username=None, email=None, password=None):
+    def authenticate(self, request, username=None, email=None, password=None, **kwargs):
         # For compatibility with unchanged forms
         if not email:
             if username:

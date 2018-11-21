@@ -130,4 +130,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, 'build', 'root')
 
-LOGIN_REDIRECT_URL = "user:login"
+LOGIN_REDIRECT_URL = "user:test"

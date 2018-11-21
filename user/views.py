@@ -1,17 +1,28 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.urls import reverse
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 
-def login_view(request, next='/'):
-    if request.method == 'GET':
+def test(request):
+    return HttpResponse("haha vodox")
+
+
+def login_view(request, next=settings.LOGIN_REDIRECT_URL):
+    if request.method == 'POST':
         credentials = {}
-        for key, value in request.GET.items():
+        for key, value in request.POST.items():
             credentials[key] = value
         user = authenticate(request, **credentials)
         if user:
             login(request, user)
-            return HttpResponseRedirect(redirect_to=next)
+            return redirect(next)
         else:
-            return HttpResponseRedirect(redirect_to='user:login', reason="Invalid Credentials!")
-    else:
-        HttpResponseRedirect(redirect_to='next')
+            return HttpResponse("voxod")
+
+
+@login_required
+def logout_view(request):
+    return logout(request)
