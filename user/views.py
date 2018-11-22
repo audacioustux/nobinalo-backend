@@ -20,7 +20,7 @@ def login_view(request, next=settings.LOGIN_REDIRECT_URL):
             login(request, user)
             return redirect(next)
         else:
-            return HttpResponse("voxod")
+            return HttpResponse(request.META.HTTP_REFERER,)
 
 
 @login_required
