@@ -1,6 +1,6 @@
+from django import forms
 from django.db.models.fields import NullBooleanField
 from django.core.exceptions import ValidationError
-from django import forms
 
 
 class TrueBooleanField(NullBooleanField):
@@ -31,3 +31,4 @@ class TrueBooleanField(NullBooleanField):
 
     def get_internal_type(self):
         return "TrueBooleanField"
+

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'graphene_django',
-    'user'
+    'user',
+    'quiz'
 ]
 
 MIDDLEWARE = [
