@@ -23,5 +23,5 @@ class Problem(models.Model):
     difficulty = models.CharField(max_length=1, choices=DIFFICULTY_CHOICES, blank=True)
     # NOTE: set by the author
 
-class Options(models.Model):
+# class Options(models.Model):
     
