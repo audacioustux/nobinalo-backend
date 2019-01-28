@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django_filters',
     'graphene_django',
     'user',
-    'quiz'
+    # 'quiz'
 ]
 
 MIDDLEWARE = [

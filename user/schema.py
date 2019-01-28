@@ -10,12 +10,7 @@ User = get_user_model()
 class UserNode(DjangoObjectType):
     class Meta:
         model = User
-        interfaces = (graphene.relay.Node,)
         exclude_fields = ('password', )
-
-#
-# class CanLogin(graphene.ObjectType):
-#     can_login = graphene
 
 
 class Query(graphene.ObjectType):
@@ -26,3 +21,16 @@ class Query(graphene.ObjectType):
             return info.context.user
         else:
             raise ValueError("User Not LoggedIn!")
+
+
+class CreateUser(graphene.Mutation):
+    class Arguments:
+        pass
+
+    @classmethod
+    def mutate(self, info, **kwargs):
+        return CreateUser()
+
+
+class Mutation(graphene.ObjectType):
+    create_user = CreateUser.Field()

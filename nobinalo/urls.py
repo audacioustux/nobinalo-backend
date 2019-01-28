@@ -24,7 +24,7 @@ urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),
     path('admin/', admin.site.urls),
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path('', include('user.urls', 'user'))
+    # path('', include('user.urls', 'user'))
 ]
 
 if settings.DEBUG:
@@ -33,6 +33,6 @@ if settings.DEBUG:
         path('__debug__/', include(debug_toolbar.urls)),
     ]
 
-urlpatterns += [
-    re_path(r'', views.catch_all)
-]
+# urlpatterns += [
+#     re_path(r'', views.catch_all)
+# ]

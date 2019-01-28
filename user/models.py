@@ -1,4 +1,3 @@
-from nobinalo.fields import TrueBooleanField
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin
@@ -25,7 +24,8 @@ class UserManager(BaseUserManager):
     def _gen_rand_handle(self):
         _prefix = "_nb."
         handle = _prefix + get_random_string(
-            length=self.model._meta.get_field('handle').max_length - len(_prefix),
+            length=self.model._meta.get_field(
+                'handle').max_length - len(_prefix),
             allowed_chars=string.ascii_lowercase + string.digits
         )
         try:
@@ -86,7 +86,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
-    
+
     date_joined = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'handle'
@@ -103,11 +103,32 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = "users"
 
 
+class EmailAddressManager(models.Manager):
+    def add_number(self, email, user_object, is_primary=None, **extra_fields):
+        email = self.Model(
+            email=email,
+            user=user_object,
+            **extra_fields
+        )
+        if is_primary:
+            email.is_primary = True
+
+        email.save()
+        return email
+
+    def remove_email(self, email_object, allow_delete_primary=False):
+        if not allow_delete_primary and email_object.is_primary:
+            raise "PrimaryDeletion"
+        else:
+            return email_object.delete()
+
+
 class EmailAddress(models.Model):
     email = models.EmailField(unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name="emails")
-    is_primary = TrueBooleanField()
+    is_primary = models.NullBooleanField(default=None)
+    # 'is_primary' should never be 'False'
     for_digest = models.BooleanField(default=False)
     for_recovery = models.BooleanField(default=True)
     is_public = models.BooleanField(default=False)
@@ -117,14 +138,6 @@ class EmailAddress(models.Model):
 
     class Meta:
         unique_together = ('user', 'is_primary')
-
-
-class SignUpEmailAddress(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField(unique=True)
-
-    def __str__(self):
-        return self.email
 
 
 class EmailVerification(models.Model):
@@ -139,10 +152,31 @@ class EmailVerification(models.Model):
         unique_together = ('user', 'email')
 
 
+class PhoneNoManager(models.Manager):
+    def add_number(self, number, user_object, is_primary=None, **extra_fields):
+        number = self.Model(
+            phone_no=number,
+            user=user_object,
+            **extra_fields
+        )
+        if is_primary:
+            number.is_primary = True
+
+        number.save()
+        return number
+
+    def remove_number(self, number_object, allow_delete_primary=False):
+        if not allow_delete_primary and number_object.is_primary:
+            raise "PrimaryDeletion"
+        else:
+            return number_object.delete()
+
+
 class PhoneNumber(models.Model):
     phone_no = models.CharField(max_length=20, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_primary = TrueBooleanField()
+    is_primary = models.NullBooleanField(default=None)
+    # 'is_primary' should never be 'False'
     for_two_step_auth = models.BooleanField(default=False)
     for_digest = models.BooleanField(default=False)
     for_recovery = models.BooleanField(default=False)
@@ -150,19 +184,13 @@ class PhoneNumber(models.Model):
     text_limit = models.IntegerField(null=True, blank=True)
     when_to_text = JSONField()
 
+    objects = PhoneNoManager()
+
     def __str__(self):
         return self.phone_no
 
     class Meta:
         unique_together = ('user', 'is_primary')
-
-
-class SignUpPhoneNumber(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_no = models.CharField(max_length=20, unique=True)
-
-    def __str__(self):
-        return self.phone_no
 
 
 class PhoneNoVerification(models.Model):
