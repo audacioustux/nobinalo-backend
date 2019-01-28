@@ -15,5 +15,5 @@ class Mutation(user.schema.Mutation, graphene.ObjectType):
 
 schema = graphene.Schema(
     query=Query,
-    # mutation=Mutation
+    mutation=Mutation
 )

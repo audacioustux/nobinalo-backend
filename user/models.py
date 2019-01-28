@@ -36,17 +36,17 @@ class UserManager(BaseUserManager):
             return self._gen_rand_handle()
 
     def _create_user(self, handle, password, **extra_fields):
-        if not handle:
-            handle = self._gen_rand_handle()
-        else:
+        if handle:
             handle = self.model.normalize_username(handle)
+        else:
+            handle = self._gen_rand_handle()
 
         user = self.model(handle=handle, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, handle, password=None, **extra_fields):
+    def create_user(self, password, handle=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
 
@@ -95,6 +95,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.handle
 
+    def is_verified(self):
+        if self.EmailAddress
+
     def get_full_name(self):
         return self.full_name
 
@@ -104,18 +107,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class EmailAddressManager(models.Manager):
-    def add_number(self, email, user_object, is_primary=None, **extra_fields):
-        email = self.Model(
-            email=email,
-            user=user_object,
-            **extra_fields
-        )
-        if is_primary:
-            email.is_primary = True
-
-        email.save()
-        return email
-
     def remove_email(self, email_object, allow_delete_primary=False):
         if not allow_delete_primary and email_object.is_primary:
             raise "PrimaryDeletion"
@@ -140,6 +131,43 @@ class EmailAddress(models.Model):
         unique_together = ('user', 'is_primary')
 
 
+class EmailVerificationManager(models.Manager):
+    def add_email(self, email, user_object):
+        email = self.Model(user=user_object, email=email)
+        email.key = get_random_string(
+            length=5,
+            allowed_chars=string.digits
+        )
+        email.save()
+
+    def _add_as_verified(self, email, user_object):
+        email = EmailAddress.Model(
+            email=email,
+            user=user_object,
+        )
+        try:
+            EmailAddress.objects.get(user=user_object, is_primary=True)
+        except EmailAddress.DoesNotExist:
+            email.is_primary = True
+
+        email.save()
+        return email
+
+    def verify_email(self, key=None, user=None, email=None, token=None):
+        if not key and not token:
+            raise ValueError("Either key or token must be given!")
+        if key:
+            if not user or not email:
+                raise ValueError("User object and email must be given!")
+            try:
+                _email = self.model.objects.get(
+                    user=user, email=email, key=key)
+                return self._add_as_verified(email, user)
+
+            except self.DoesNotExist:
+                raise ValidationError("Verification faild!")
+
+
 class EmailVerification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField()
@@ -153,18 +181,6 @@ class EmailVerification(models.Model):
 
 
 class PhoneNoManager(models.Manager):
-    def add_number(self, number, user_object, is_primary=None, **extra_fields):
-        number = self.Model(
-            phone_no=number,
-            user=user_object,
-            **extra_fields
-        )
-        if is_primary:
-            number.is_primary = True
-
-        number.save()
-        return number
-
     def remove_number(self, number_object, allow_delete_primary=False):
         if not allow_delete_primary and number_object.is_primary:
             raise "PrimaryDeletion"
@@ -191,6 +207,43 @@ class PhoneNumber(models.Model):
 
     class Meta:
         unique_together = ('user', 'is_primary')
+
+
+class PhoneNoVerificationManager(models.Manager):
+    def add_number(self, phone_no, user_object):
+        number = self.Model(user=user_object, phone_no=phone_no)
+        number.key = get_random_string(
+            length=5,
+            allowed_chars=string.digits
+        )
+        number.save()
+
+    def _add_as_verified(self, phone_no, user_object):
+        number = PhoneNumber.Model(
+            phone_no=phone_no,
+            user=user_object,
+        )
+        try:
+            PhoneNumber.objects.get(user=user_object, is_primary=True)
+        except PhoneNumber.DoesNotExist:
+            number.is_primary = True
+
+        number.save()
+        return number
+
+    def verify_number(self, key=None, user=None, phone_no=None, token=None):
+        if not key and not token:
+            raise ValueError("Either key or token must be given!")
+        if key:
+            if not user or not phone_no:
+                raise ValueError("User object and phone number must be given!")
+            try:
+                _email = self.model.objects.get(
+                    user=user, phone_no=phone_no, key=key)
+                return self._add_as_verified(phone_no, user)
+
+            except self.DoesNotExist:
+                raise ValidationError("Verification faild!")
 
 
 class PhoneNoVerification(models.Model):
