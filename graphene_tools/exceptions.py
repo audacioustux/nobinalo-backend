@@ -31,3 +31,8 @@ class ValidationError(GraphQLError):
 class NotFound(GraphQLError):
     default_message = _('GraphQL object not found')
     default_code = 'notFound'
+
+
+class KeyExpired(GraphQLError):
+    default_message = "Key Expired"
+    default_code = 'expired'

@@ -16,6 +16,13 @@ from django.utils.timezone import now
 from django.core.exceptions import ValidationError
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.crypto import get_random_string
+from django.db.models import Q
+from django.db import IntegrityError
+from django.core.mail import send_mail
+from graphene_tools.exceptions import KeyExpired
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
+import asyncio
 
 
 class UserManager(BaseUserManager):
@@ -30,7 +37,7 @@ class UserManager(BaseUserManager):
         )
         try:
             self.model.objects.get(handle=handle)
-        except self.DoesNotExist:
+        except self.model.DoesNotExist:
             return handle
         else:
             return self._gen_rand_handle()
@@ -66,7 +73,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     handle = models.CharField(
-        max_length=32,
+        max_length=40,
         unique=True,
         validators=[profanity_validator, RegexHandleValidator]
     )
@@ -95,8 +102,21 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.handle
 
-    def is_verified(self):
-        if self.EmailAddress
+    def is_verified(self, get_with=False):
+        try:
+            verified_with = User.objects.get(
+                Q(pk=self.pk) & (
+                    Q(email__is_primary=True) |
+                    Q(phone_no__is_primary=True)
+                )
+            )
+            if get_with:
+                return verified_with
+            return True
+        except User.DoesNotExist:
+            if get_with:
+                return None
+            return False
 
     def get_full_name(self):
         return self.full_name
@@ -106,23 +126,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = "users"
 
 
-class EmailAddressManager(models.Manager):
-    def remove_email(self, email_object, allow_delete_primary=False):
-        if not allow_delete_primary and email_object.is_primary:
-            raise "PrimaryDeletion"
-        else:
-            return email_object.delete()
-
-
 class EmailAddress(models.Model):
     email = models.EmailField(unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name="emails")
+                             related_name="emails", related_query_name="email")
     is_primary = models.NullBooleanField(default=None)
-    # 'is_primary' should never be 'False'
+    # 'is_primary' should never be == False
     for_digest = models.BooleanField(default=False)
     for_recovery = models.BooleanField(default=True)
     is_public = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.is_primary is False:
+            self.is_primary = None
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.email
@@ -132,65 +149,57 @@ class EmailAddress(models.Model):
 
 
 class EmailVerificationManager(models.Manager):
-    def add_email(self, email, user_object):
-        email = self.Model(user=user_object, email=email)
-        email.key = get_random_string(
-            length=5,
-            allowed_chars=string.digits
-        )
-        email.save()
+    def add_email(self, email):
+        try:
+            EmailAddress.objects.get(email=email)
+            raise Exception('Email Already Exist!')
+            # TODO: make or use exception class/type
+        except EmailAddress.DoesNotExist:
+            _key = get_random_string(length=5, allowed_chars=string.digits)
+            email_instance, is_created = self.get_or_create(email=email, defaults={'key': _key})
+            email_instance.send_mail(message=_key)
+        return email_instance, is_created
 
-    def _add_as_verified(self, email, user_object):
-        email = EmailAddress.Model(
+    @staticmethod
+    def _add_as_verified(email, user_object, is_primary):
+        email, is_created = EmailAddress.objects.get_or_create(
             email=email,
             user=user_object,
+            defaults={'is_primary': is_primary}
         )
-        try:
-            EmailAddress.objects.get(user=user_object, is_primary=True)
-        except EmailAddress.DoesNotExist:
-            email.is_primary = True
-
-        email.save()
+        if not is_created and email.user != user_object:
+            raise KeyExpired
         return email
 
-    def verify_email(self, key=None, user=None, email=None, token=None):
-        if not key and not token:
-            raise ValueError("Either key or token must be given!")
-        if key:
-            if not user or not email:
-                raise ValueError("User object and email must be given!")
-            try:
-                _email = self.model.objects.get(
-                    user=user, email=email, key=key)
-                return self._add_as_verified(email, user)
-
-            except self.DoesNotExist:
-                raise ValidationError("Verification faild!")
+    def verify_email(self, key, user_object, email, is_primary=None):
+        try:
+            _email = self.model.objects.get(email=email, key=key)
+            return self._add_as_verified(email, user_object, is_primary)
+        except self.model.DoesNotExist:
+            raise ValidationError("Verification failed!")
 
 
 class EmailVerification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     key = models.PositiveIntegerField()
+
+    objects = EmailVerificationManager()
 
     def __str__(self):
         return self.email
 
-    class Meta:
-        unique_together = ('user', 'email')
-
-
-class PhoneNoManager(models.Manager):
-    def remove_number(self, number_object, allow_delete_primary=False):
-        if not allow_delete_primary and number_object.is_primary:
-            raise "PrimaryDeletion"
-        else:
-            return number_object.delete()
+    def send_mail(self, *args, **kwargs):
+        send_mail(
+            subject="Verify Email",
+            from_email="tangimhossain1@gmail.com",
+            recipient_list=(self.email,),
+            *args, **kwargs
+        )
 
 
 class PhoneNumber(models.Model):
     phone_no = models.CharField(max_length=20, unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="numbers", related_query_name="phone_no")
     is_primary = models.NullBooleanField(default=None)
     # 'is_primary' should never be 'False'
     for_two_step_auth = models.BooleanField(default=False)
@@ -200,7 +209,10 @@ class PhoneNumber(models.Model):
     text_limit = models.IntegerField(null=True, blank=True)
     when_to_text = JSONField()
 
-    objects = PhoneNoManager()
+    def save(self, *args, **kwargs):
+        if self.is_primary is False:
+            self.is_primary = None
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.phone_no
@@ -213,12 +225,13 @@ class PhoneNoVerificationManager(models.Manager):
     def add_number(self, phone_no, user_object):
         number = self.Model(user=user_object, phone_no=phone_no)
         number.key = get_random_string(
-            length=5,
-            allowed_chars=string.digits
+            length=6,
+            allowed_chars=string.digits + string.ascii_letters
         )
         number.save()
 
-    def _add_as_verified(self, phone_no, user_object):
+    @staticmethod
+    def _add_as_verified(phone_no, user_object):
         number = PhoneNumber.Model(
             phone_no=phone_no,
             user=user_object,
@@ -243,16 +256,12 @@ class PhoneNoVerificationManager(models.Manager):
                 return self._add_as_verified(phone_no, user)
 
             except self.DoesNotExist:
-                raise ValidationError("Verification faild!")
+                raise ValidationError("Verification failed!")
 
 
 class PhoneNoVerification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    phone_no = models.CharField(max_length=20)
+    phone_no = models.CharField(max_length=20, unique=True)
     key = models.CharField(max_length=8)
 
     def __str__(self):
         return self.phone_no
-
-    class Meta:
-        unique_together = ('user', 'phone_no')

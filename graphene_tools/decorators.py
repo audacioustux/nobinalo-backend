@@ -1,7 +1,7 @@
-
-from functools import wraps
-
 from . import exceptions
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+from functools import wraps
 
 __all__ = [
     'user_passes_test',
@@ -9,6 +9,8 @@ __all__ = [
     'staff_member_required',
     'permission_required',
 ]
+
+User = get_user_model()
 
 
 def context(f):
@@ -34,7 +36,9 @@ def user_passes_test(test_func):
 
 
 login_required = user_passes_test(lambda u: u.is_authenticated)
+anonymous_required = user_passes_test(lambda u: u.is_anonymous)
 staff_member_required = user_passes_test(lambda u: u.is_active and u.is_staff)
+verified_required = user_passes_test(lambda u: u.is_verified())
 
 
 def permission_required(perm):

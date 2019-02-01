@@ -1,5 +1,5 @@
 from django.contrib.auth.backends import ModelBackend
-from .models import EmailAddress, SignUpEmailAddress, PhoneNumber, SignUpPhoneNumber
+from .models import EmailAddress, PhoneNumber
 from django.core.exceptions import PermissionDenied
 
 

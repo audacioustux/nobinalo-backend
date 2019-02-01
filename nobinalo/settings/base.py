@@ -10,9 +10,6 @@ BASE_DIR = os.path.dirname(
     )
 )
 
-FRONTEND_DIR = os.path.abspath(
-    os.path.join(BASE_DIR, '..', 'frontend'))
-
 with open('secrets.json') as f:
     secrets = json.loads(f.read())
 
@@ -38,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django_filters',
     'graphene_django',
@@ -48,7 +44,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,7 +73,7 @@ ROOT_URLCONF = 'nobinalo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(FRONTEND_DIR, 'build')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,8 +104,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'user.backends.EmailBackend',
-    'user.backends.PhoneNumberBackend',
+    # 'user.backends.EmailBackend',
+    # 'user.backends.PhoneNumberBackend',
     'user.backends.HandleBackend'
 ]
 
@@ -122,13 +117,4 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATICFILES_DIRS = [os.path.join(FRONTEND_DIR, 'build', 'static')]
-STATICFILES_STORAGE = (
-    'whitenoise.storage.CompressedManifestStaticFilesStorage'
-)
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, 'build', 'root')
-
-LOGIN_REDIRECT_URL = "user:test"
