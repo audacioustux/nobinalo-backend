@@ -1,0 +1,51 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "./build/index.js",
+  "scripts": {
+    "build": "npx babel src --out-dir build",
+    "build-watch": "npx babel src --watch --out-dir build",
+    "run-build": "node ./build",
+    "start-build": "npm run build && npm run run-build",
+    "start": "node --require @babel/register ./src",
+    "dev": "nodemon --require @babel/register ./src",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "npx sequelize db:seed:all"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/register": "^7.0.0",
+    "apollo-server-koa": "^2.4.0",
+    "argon2": "^0.20.1",
+    "graphql": "^14.1.1",
+    "graphql-playground-middleware-koa": "^1.6.11",
+    "graphql-shield": "^5.1.2",
+    "graphql-tools": "^4.0.4",
+    "hashids": "^1.2.2",
+    "koa": "^2.7.0",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.11",
+    "node-cron": "^2.0.3",
+    "pg": "^7.8.0",
+    "pg-hstore": "^2.3.2",
+    "redis": "^2.8.0",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "gulp": "^4.0.0",
+    "gulp-rename": "^1.4.0",
+    "nodemon": "^1.18.10"
+  }
+}
