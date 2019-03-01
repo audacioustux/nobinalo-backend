@@ -46,14 +46,20 @@ export default (sequelize, DataTypes) => {
           return this.setDataValue('gender', value[0]);
         },
       },
+      hooks: {
+        beforeSave: (instance) => {
+          if (instance.changed('password')) {
+            return argon.hash(instance.password)
+              .then(hashedPw => instance.setDataValue('password', hashedPw));
+          } return instance;
+        },
+      },
       paranoid: true,
     },
   );
 
-  User.beforeCreate(
-    instance => argon.hash(instance.password)
-      .then(hashedPw => instance.setDataValue('password', hashedPw)),
-  );
-
+  User.prototype.isValidPass = async function isValidPass(rawPassword) {
+    return argon.verify(this.password, rawPassword);
+  };
   return User;
 };

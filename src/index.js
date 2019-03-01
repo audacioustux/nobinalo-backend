@@ -24,11 +24,28 @@ router.get('/', async (ctx) => {
   });
 });
 
-router.get('/:name', async (ctx) => {
-  models.User.create({
-    handle: ctx.params.name,
-    fullName: 'tanjim hossain',
-    password: 'sfdf3e3',
+// router.get('/:name/:pass', async (ctx) => {
+//   models.User.findOne({ where: { handle: ctx.params.name } }).then(async (user) => {
+//     console.log(await user.isValidPass(ctx.params.pass));
+//   });
+// });
+
+// router.get('/:name', async (ctx) => {
+//   models.User.create({
+//     handle: ctx.params.name,
+//     fullName: 'tanjim hossain',
+//     password: 'sfdf3e3',
+//   });
+// });
+
+router.get('/u', async (ctx) => {
+  models.User.update({
+    password: 'audac',
+  }, {
+    where: {
+      handle: 'auda',
+    },
+    individualHooks: true,
   });
 });
 
