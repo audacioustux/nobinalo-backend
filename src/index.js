@@ -1,8 +1,14 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
 import Router from 'koa-router';
+import chalk from 'chalk';
 import apolloServer from './apollo';
 import sequelize from './db';
+
+require('dotenv').config();
+
+const env = process.env.NODE_ENV || 'development';
+const port = process.env.PORT || 3000;
 
 const { models } = sequelize;
 const app = new Koa();
@@ -29,8 +35,10 @@ router.get('/:name', async (ctx) => {
 app.use(router.routes());
 
 app.listen(
-  { port: 3000 },
-  () => process.stdout.write(
-    `GraphQL at: http://localhost:3000${apolloServer.graphqlPath} 🚀\n`,
-  ),
+  { port },
+  () => {
+    process.stdout.write(
+      `${chalk.red('Mode: ') + env}\n${chalk.green('GraphQL at: ')}http://localhost:${port}${apolloServer.graphqlPath} 🚀\n`,
+    );
+  },
 );

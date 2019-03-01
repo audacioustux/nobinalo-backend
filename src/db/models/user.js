@@ -1,3 +1,5 @@
+const argon = require('argon2');
+
 export default (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
@@ -47,5 +49,11 @@ export default (sequelize, DataTypes) => {
       paranoid: true,
     },
   );
+
+  User.beforeCreate(
+    instance => argon.hash(instance.password)
+      .then(hashedPw => instance.setDataValue('password', hashedPw)),
+  );
+
   return User;
 };

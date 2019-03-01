@@ -1,17 +1,11 @@
 module.exports = {
-  up: ({ queryInterface }) => queryInterface.bulkInsert(
-    'Users',
-    [
-      {
-        handle: 'audacioustux',
-        fullName: 'Tanjim Hossain',
-        password: 'admin',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
-    {},
-  ),
+  up: (queryInterface, Sequelize) => queryInterface.bulkInsert('Users', [{
+    handle: 'audacaioustuxa',
+    fullName: 'Tanjim Hossain',
+    password: 'admin',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }], {}),
 
-  down: ({ queryInterface }) => queryInterface.bulkDelete('Users', null, {}),
+  down: (queryInterface, Sequelize) => queryInterface.bulkDelete('Users', null, {}),
 };
