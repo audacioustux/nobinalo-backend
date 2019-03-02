@@ -39,7 +39,8 @@
     "pg-hstore": "^2.3.2",
     "redis": "^2.8.0",
     "sequelize": "^4.42.0",
-    "sequelize-cli": "^5.4.0"
+    "sequelize-cli": "^5.4.0",
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",

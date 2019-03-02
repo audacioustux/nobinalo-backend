@@ -1,3 +1,5 @@
+import { validatePassword } from '../utils/validators';
+
 const argon = require('argon2');
 
 export default (sequelize, DataTypes) => {
@@ -49,6 +51,7 @@ export default (sequelize, DataTypes) => {
       hooks: {
         beforeSave: (instance) => {
           if (instance.changed('password')) {
+            validatePassword(instance.password);
             return argon.hash(instance.password)
               .then(hashedPw => instance.setDataValue('password', hashedPw));
           } return instance;
@@ -61,5 +64,6 @@ export default (sequelize, DataTypes) => {
   User.prototype.isValidPass = async function isValidPass(rawPassword) {
     return argon.verify(this.password, rawPassword);
   };
+
   return User;
 };

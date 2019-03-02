@@ -30,17 +30,17 @@ router.get('/', async (ctx) => {
 //   });
 // });
 
-// router.get('/:name', async (ctx) => {
-//   models.User.create({
-//     handle: ctx.params.name,
-//     fullName: 'tanjim hossain',
-//     password: 'sfdf3e3',
-//   });
-// });
+router.get('/:name', async (ctx) => {
+  models.User.create({
+    handle: ctx.params.name,
+    fullName: 'tanjim hossain',
+    password: 'sfdf3e3',
+  });
+});
 
 router.get('/u', async (ctx) => {
   models.User.update({
-    password: 'audac',
+    password: 'auডdac',
   }, {
     where: {
       handle: 'auda',
