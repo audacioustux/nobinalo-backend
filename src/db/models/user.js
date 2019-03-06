@@ -69,5 +69,6 @@ export default (sequelize, DataTypes) => {
   User.prototype.isValidPass = async function isValidPass(rawPassword) {
     return argon.verify(this.password, rawPassword);
   };
+
   return User;
 };

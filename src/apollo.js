@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-koa');
+const { ApolloServer, gql } = require('apollo-server-express');
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`

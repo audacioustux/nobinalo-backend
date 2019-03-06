@@ -1,61 +1,40 @@
-import Koa from 'koa';
-import logger from 'koa-logger';
-import Router from 'koa-router';
+import express from 'express';
 import chalk from 'chalk';
+import session from 'express-session';
+import { google } from 'googleapis';
 import apolloServer from './apollo';
-import sequelize from './db';
+
+const RedisStore = require('connect-redis')(session);
 
 require('dotenv').config();
 
-const env = process.env.NODE_ENV || 'development';
-const port = process.env.PORT || 3000;
+const {
+  PORT = 3000,
+  NODE_ENV = 'development',
+  SESS_LIFE = 1000 * 60 * 60 * 24 * 365,
+  SESS_SECRET,
+} = process.env;
 
-const { models } = sequelize;
-const app = new Koa();
-const router = new Router();
+const app = express();
 
-app.use(logger());
+app.use(session({
+  store: new RedisStore({ port: 6379 }),
+  secret: SESS_SECRET,
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: SESS_LIFE,
+    sameSite: true,
+    secure: NODE_ENV === 'production',
+  },
+}));
 
 apolloServer.applyMiddleware({ app });
 
-router.get('/', async (ctx) => {
-  await models.User.findAll().then((users) => {
-    ctx.body = JSON.stringify(users);
-  });
-});
-
-// router.get('/:name/:pass', async (ctx) => {
-//   models.User.findOne({ where: { handle: ctx.params.name } }).then(async (user) => {
-//     console.log(await user.isValidPass(ctx.params.pass));
-//   });
-// });
-
-router.get('/:name', async () => {
-  models.User.create({
-    // handle: ctx.params.name,
-    fullName: 'tanjim hossain',
-    password: 'sfdfkkll3e3',
-  });
-});
-
-router.get('/u', async () => {
-  models.User.update({
-    password: 'auডdac',
-  }, {
-    where: {
-      handle: 'auda',
-    },
-    individualHooks: true,
-  });
-});
-
-app.use(router.routes());
-
 app.listen(
-  { port },
+  PORT,
   () => {
-    process.stdout.write(
-      `${chalk.red('Mode: ') + env}\n${chalk.green('GraphQL at: ')}http://localhost:${port}${apolloServer.graphqlPath} 🚀\n`,
-    );
+    process.stdout.write(`${chalk.red('Mode: ') + NODE_ENV}\n`);
+    process.stdout.write(`${chalk.green('GraphQL at: ')}http://localhost:${PORT}${apolloServer.graphqlPath} 🚀\n`);
   },
 );

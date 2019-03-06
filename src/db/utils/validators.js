@@ -74,4 +74,5 @@ export {
   validateHandle,
   MAX_HANDLE_LENGTH,
   MIN_HANDLE_LENGTH,
+  MIN_PASS_LENGTH,
 };
