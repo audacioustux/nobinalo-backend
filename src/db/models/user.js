@@ -12,7 +12,6 @@ export default (sequelize, DataTypes) => {
     {
       handle: {
         type: DataTypes.STRING(MAX_HANDLE_LENGTH),
-        allowNull: true,
         unique: true,
         validate: { validateHandle },
       },
@@ -24,10 +23,7 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING(64),
       },
       gender: {
-        type: DataTypes.CHAR(1),
-        validate: {
-          isIn: [['m', 'f', 'o']],
-        },
+        type: DataTypes.ENUM('male', 'female', 'other'),
       },
       lastLoggedAt: {
         type: DataTypes.DATE,
@@ -38,21 +34,6 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      getterMethods: {
-        gender() {
-          const GENDERS = {
-            m: 'male',
-            f: 'female',
-            o: 'other',
-          };
-          return GENDERS[this.getDataValue('gender')];
-        },
-      },
-      setterMethods: {
-        gender(value) {
-          return this.setDataValue('gender', value[0]);
-        },
-      },
       hooks: {
         beforeSave: (instance) => {
           if (instance.changed('password')) {
@@ -70,5 +51,6 @@ export default (sequelize, DataTypes) => {
     return argon.verify(this.password, rawPassword);
   };
 
+  // User.sync({ force: true });
   return User;
 };

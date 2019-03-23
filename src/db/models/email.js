@@ -7,8 +7,12 @@ export default (sequelize, DataTypes) => {
         validators: {
           isEmail: true,
         },
-        unique: true,
         primaryKey: true,
+        unique: true,
+      },
+      verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       isPrimary: {
         type: DataTypes.BOOLEAN,
@@ -27,7 +31,11 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
       },
     },
-    {},
+    {
+      indexes: [
+        { fields: ['email', 'isPrimary'], unique: true },
+      ],
+    },
   );
 
   Email.associate = (models) => {
@@ -38,6 +46,6 @@ export default (sequelize, DataTypes) => {
       },
     });
   };
-
+  // Email.sync({ force: true });
   return Email;
 };
