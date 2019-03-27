@@ -10,10 +10,6 @@ export default (sequelize, DataTypes) => {
         primaryKey: true,
         unique: true,
       },
-      verified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
       isPrimary: {
         type: DataTypes.BOOLEAN,
         validators: {

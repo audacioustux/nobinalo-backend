@@ -19,13 +19,11 @@ async function register(fullName, password, email, phoneNumber) {
     await models.Email.create({ email, UserId: User.id }, { transaction });
 
     const activationKey = await crypto.randomBytes(3).toString('hex');
-    redisClient.hmset('EmailVerificationCode', ['email', email, 'key', activationKey]);
+    redisClient.set(`email:${domain}`, activationKey, 'EX', 60 * 60 * 24);
 
     const jwtActivationToken = await jwt.sign({ email, user: User.id }, `${EMAIL_ACTIVATION_SECRET}${activationKey}`);
 
-    const activationLink = new URL(`http://localhost:${PORT}`);
-    activationLink.searchParams.set('token', jwtActivationToken);
-    activationLink.searchParams.set('key', activationKey);
+    const activationLink = new URL(`http://localhost:${PORT}/verify/${jwtActivationToken}`);
 
     await sendMail({
       to: email,
@@ -37,7 +35,6 @@ async function register(fullName, password, email, phoneNumber) {
 
     return true;
   } catch (err) {
-    console.log(err);
     if (err) await transaction.rollback();
     return false;
   }
