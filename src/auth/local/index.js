@@ -1,54 +1,69 @@
-import * as jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import sendMail from '../../utils/sendMail';
-import redisClient from '../../utils/redis';
+import * as jwt from 'jsonwebtoken';
 import db from '../../db';
+import sendMail from '../../utils/sendMail';
 
 const { EMAIL_ACTIVATION_SECRET, PORT = 3001 } = process.env;
 const { models } = db;
 
-async function register(fullName, password, email, phoneNumber) {
-  if (email || phoneNumber === false) Error('email or phone number must be given');
+async function register(handle, password, email, phoneNumber) {
+  if (email || phoneNumber === false) Error('email or phone number must begiven');
+
   let transaction;
   try {
     transaction = await db.transaction();
     const User = await models.User.create(
-      { fullName, password },
+      { handle, password },
       { transaction },
     );
-    await models.Email.create({ email, UserId: User.id }, { transaction });
 
-    const activationKey = await crypto.randomBytes(3).toString('hex');
-    redisClient.set(`email:${domain}`, activationKey, 'EX', 60 * 60 * 24);
+    const key = await crypto.randomBytes(3).toString('hex');
+    const uEmail = await models.uEmail.findOrCreate(
+      {
+        where: { email },
+        defaults: { key },
+        transaction,
+      },
+    );
 
-    const jwtActivationToken = await jwt.sign({ email, user: User.id }, `${EMAIL_ACTIVATION_SECRET}${activationKey}`);
+    const jwtActivationToken = await jwt.sign(
+      { email, handle },
+      EMAIL_ACTIVATION_SECRET,
+      { expiresIn: '48h' },
+    );
 
-    const activationLink = new URL(`http://localhost:${PORT}/verify/${jwtActivationToken}`);
+    const activationLink = `http://localhost:${PORT}/verify/${jwtActivationToken}`;
 
     await sendMail({
       to: email,
-      subject: `${activationKey} is your Nobinalo.com account verification code`,
-      text: `<a href="${activationLink.href}"></a>`,
+      subject: `${uEmail[0].key} is your Nobinalo.com account verification code`,
+      text: activationLink,
+      html: `<a href="${activationLink}"></a>`,
     });
-
     await transaction.commit();
 
-    return true;
+    return User;
   } catch (err) {
     if (err) await transaction.rollback();
+    return err;
+  }
+}
+
+function login() {}
+
+function authenticate() {}
+
+async function verifyToken(token) {
+  try {
+    await jwt.verify(token, EMAIL_ACTIVATION_SECRET);
+    const payload = await jwt.decode(token);
+    models.email.create();
+  } catch (err) {
     return false;
   }
 }
 
-function login() {
-
-}
-
-function authenticate() {
-
-}
-
-function verify() {
+function verifyKey(user, email, key) {
 
 }
 
@@ -56,5 +71,6 @@ export {
   register,
   login,
   authenticate,
-  verify,
+  verifyKey,
+  verifyToken,
 };

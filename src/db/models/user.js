@@ -13,20 +13,17 @@ export default (sequelize, DataTypes) => {
       handle: {
         type: DataTypes.STRING(MAX_HANDLE_LENGTH),
         unique: true,
+        allowNull: false,
         validate: { validateHandle },
       },
       fullName: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.STRING(80),
       },
       displayName: {
-        type: DataTypes.STRING(64),
+        type: DataTypes.STRING(32),
       },
       gender: {
         type: DataTypes.ENUM('male', 'female', 'other'),
-      },
-      lastLoggedAt: {
-        type: DataTypes.DATE,
       },
       password: {
         type: DataTypes.STRING,

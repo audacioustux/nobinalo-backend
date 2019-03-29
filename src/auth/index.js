@@ -4,10 +4,10 @@ import { register } from './local';
 const express = require('express');
 
 const router = express.Router();
-const { models } = db;
+// const { models } = db;
 router.route('/login')
   .get(async (req, res) => {
-    await register('full name', 'sfdfd vdcd', 'tangimhossain1@gmail.com');
+    await register('tux', 'sdsfsfdsds', 'tangimhossain1@gmail.com');
     res.end();
   })
   .post(async (req, res) => {

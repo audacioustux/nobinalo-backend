@@ -10,37 +10,12 @@ export default (sequelize, DataTypes) => {
         primaryKey: true,
         unique: true,
       },
-      isPrimary: {
-        type: DataTypes.BOOLEAN,
-        validators: {
-          is: /^(true|yes|t|y|on|1)$/i,
-        },
-        defaultValue: null,
-      },
-      forDigest: {
-        type: DataTypes.BOOLEAN,
-      },
-      forRecovery: {
-        type: DataTypes.BOOLEAN,
-      },
-      isPublic: {
-        type: DataTypes.BOOLEAN,
-      },
     },
-    {
-      indexes: [
-        { fields: ['email', 'isPrimary'], unique: true },
-      ],
-    },
+    {},
   );
 
   Email.associate = (models) => {
-    Email.belongsTo(models.User, {
-      onDelete: 'CASCADE',
-      foreignKey: {
-        allowNull: false,
-      },
-    });
+    Email.belongsToMany(models.User, { through: 'userEmail', foreignKey: 'emailPk' });
   };
   // Email.sync({ force: true });
   return Email;

@@ -7,31 +7,18 @@ export default (sequelize, DataTypes) => {
         validators: {
           isEmail: true,
         },
-        primaryKey: true,
         unique: true,
+        primaryKey: true,
       },
       key: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.CHAR(6),
       },
-      attemps: {
-        type: DataTypes.SMALLINT,
+      attempts: {
+        type: DataTypes.JSONB,
       },
     },
-    {
-      indexes: [
-        { fields: ['email', 'UserId'], unique: true },
-      ],
-    },
+    {},
   );
-
-  uEmail.associate = (models) => {
-    uEmail.belongsTo(models.User, {
-      onDelete: 'CASCADE',
-      foreignKey: {
-        allowNull: false,
-      },
-    });
-  };
   // uEmail.sync({ force: true });
   return uEmail;
 };
