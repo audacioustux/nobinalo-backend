@@ -12,6 +12,7 @@ export default (sequelize, DataTypes) => {
       },
       key: {
         type: DataTypes.CHAR(6),
+        allowNull: false,
       },
       attempts: {
         type: DataTypes.JSONB,

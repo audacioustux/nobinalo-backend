@@ -21,7 +21,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       indexes: [
-        { fields: ['emailPk', 'isPrimary'], unique: true },
+        { fields: ['EmailId', 'isPrimary'], unique: true },
       ],
     },
   );

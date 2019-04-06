@@ -48,6 +48,10 @@ export default (sequelize, DataTypes) => {
     return argon.verify(this.password, rawPassword);
   };
 
+  User.associate = (models) => {
+    User.belongsToMany(models.Email, { as: 'emails', through: 'userEmail' });
+  };
+
   // User.sync({ force: true });
   return User;
 };

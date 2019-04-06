@@ -7,16 +7,13 @@ export default (sequelize, DataTypes) => {
         validators: {
           isEmail: true,
         },
-        primaryKey: true,
         unique: true,
+        allowNull: false,
       },
     },
     {},
   );
 
-  Email.associate = (models) => {
-    Email.belongsToMany(models.User, { through: 'userEmail', foreignKey: 'emailPk' });
-  };
   // Email.sync({ force: true });
   return Email;
 };

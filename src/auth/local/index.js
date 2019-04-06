@@ -2,9 +2,12 @@ import crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import db from '../../db';
 import sendMail from '../../utils/sendMail';
+import { createSession } from '../utils';
 
-const { EMAIL_ACTIVATION_SECRET, PORT = 3001 } = process.env;
+const { EMAIL_ACTIVATION_SECRET, JWT_SECRET, PORT = 3001 } = process.env;
 const { models } = db;
+
+const JWT_SECRET_BUF = Buffer.from(JWT_SECRET, 'base64');
 
 async function register(handle, password, email, phoneNumber) {
   if (email || phoneNumber === false) Error('email or phone number must begiven');
@@ -31,7 +34,6 @@ async function register(handle, password, email, phoneNumber) {
       EMAIL_ACTIVATION_SECRET,
       { expiresIn: '48h' },
     );
-
     const activationLink = `http://localhost:${PORT}/verify/${jwtActivationToken}`;
 
     await sendMail({
@@ -49,22 +51,63 @@ async function register(handle, password, email, phoneNumber) {
   }
 }
 
-function login() {}
-
-function authenticate() {}
-
 async function verifyToken(token) {
+  let transaction;
   try {
     await jwt.verify(token, EMAIL_ACTIVATION_SECRET);
     const payload = await jwt.decode(token);
-    models.email.create();
+
+    const user = await models.User.findOne({ where: { handle: payload.handle } });
+
+    transaction = await db.transaction();
+    const email = await models.Email.findOrCreate({ where: { email: payload.email }, transaction });
+    await user.setEmails(email[0], { transaction });
+    await transaction.commit();
+
+    return true;
   } catch (err) {
     return false;
   }
 }
 
-function verifyKey(user, email, key) {
+async function verifyKey(email, key, handle) {
+  const uEmail = await models.uEmail.findOne({ where: { email, key } });
+  if (uEmail === null) return false;
 
+  let transaction;
+  try {
+    transaction = await db.transaction();
+    const vEmail = await models.Email.findOrCreate({ where: { email }, transaction });
+    const user = await models.User.findOne({ where: { handle } });
+    await user.setEmails(vEmail[0], { transaction });
+    await transaction.commit();
+  } catch (err) {
+    return false;
+  }
+
+  return true;
+}
+
+async function login(handle, password, platform) {
+  const user = await models.User.findOne({ where: { handle } });
+  const sid = await user.isValidPass(password).then(isValid => (
+    isValid ? createSession(user, { data: { via: 'local', platform } }) : false
+  ));
+  const secretSuffixBuf = crypto.randomBytes(15);
+  return {
+    token: jwt.sign(
+      { handle, sid },
+      Buffer.concat(
+        [JWT_SECRET_BUF, secretSuffixBuf],
+      ),
+      { algorithm: 'HS256' },
+    ),
+    secretSuffix: secretSuffixBuf.toString('base64'),
+  };
+}
+
+async function authenticate(token, secretSuffix) {
+  return jwt.verify(token, JWT_SECRET.concat(secretSuffix), { algorithms: ['HS256'] });
 }
 
 export {
