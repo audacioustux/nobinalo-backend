@@ -1,4 +1,3 @@
-import db from '../db';
 import { register } from './local';
 
 const express = require('express');
@@ -7,7 +6,7 @@ const router = express.Router();
 // const { models } = db;
 router.route('/login')
   .get(async (req, res) => {
-    await register('tux', 'sdsfsfdsds', 'tangimhossain1@gmail.com');
+    console.log(await register('tux', 'sdsfsfdsds', 'tangimhossain1@gmail.com'));
     res.end();
   })
   .post(async (req, res) => {

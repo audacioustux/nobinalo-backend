@@ -1,13 +1,13 @@
 import crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
+import Sequelize from 'sequelize';
+import _ from 'lodash';
 import db from '../../db';
 import sendMail from '../../utils/sendMail';
-import { createSession } from '../utils';
+import { createSession, JWT_SECRET_BUF } from '../utils';
 
-const { EMAIL_ACTIVATION_SECRET, JWT_SECRET, PORT = 3001 } = process.env;
+const { EMAIL_ACTIVATION_SECRET, PORT = 3001 } = process.env;
 const { models } = db;
-
-const JWT_SECRET_BUF = Buffer.from(JWT_SECRET, 'base64');
 
 async function register(handle, password, email, phoneNumber) {
   if (email || phoneNumber === false) Error('email or phone number must begiven');
@@ -47,7 +47,14 @@ async function register(handle, password, email, phoneNumber) {
     return User;
   } catch (err) {
     if (err) await transaction.rollback();
-    return err;
+    if (err instanceof Sequelize.ValidationError) {
+      const errMsgs = [];
+      for (let e = 0; e < err.errors.length; e += 1) {
+        errMsgs.push(_.pick(err.errors[e], ['message', 'path', 'value', 'type']));
+      }
+      return errMsgs;
+    }
+    return false;
   }
 }
 
@@ -93,6 +100,8 @@ async function login(handle, password, platform) {
   const sid = await user.isValidPass(password).then(isValid => (
     isValid ? createSession(user, { data: { via: 'local', platform } }) : false
   ));
+  if (sid === false) return false;
+
   const secretSuffixBuf = crypto.randomBytes(15);
   return {
     token: jwt.sign(
@@ -106,14 +115,10 @@ async function login(handle, password, platform) {
   };
 }
 
-async function authenticate(token, secretSuffix) {
-  return jwt.verify(token, JWT_SECRET.concat(secretSuffix), { algorithms: ['HS256'] });
-}
-
+login('tux', 'sdsfsfdsds', 'browser');
 export {
   register,
   login,
-  authenticate,
   verifyKey,
   verifyToken,
 };
