@@ -1,6 +1,7 @@
 {
   "presets": [
     [
+      "flow",
       "@babel/preset-env",
       {
         "targets": {
