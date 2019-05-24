@@ -1,11 +1,10 @@
+// @flow
 import chalk from 'chalk';
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import * as auth from './auth';
 import apolloServer from './api';
-
-require('dotenv').config();
 
 const { PORT = 3001, NODE_ENV = 'development' } = process.env;
 

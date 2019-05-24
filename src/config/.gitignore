@@ -1,0 +1,6 @@
+*
+
+!.gitignore
+!dev.json
+!dev@.example.json
+!index.js

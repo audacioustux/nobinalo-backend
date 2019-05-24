@@ -1,0 +1,5 @@
+{
+  "ssl": true,
+  "port": 4000,
+  "hostname": "localhost"
+}

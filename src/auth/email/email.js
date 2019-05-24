@@ -1,3 +1,4 @@
+// @flow
 import * as jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import db from '../../db';
@@ -16,7 +17,7 @@ function jwtActivationToken(email) {
   );
 }
 
-async function sendVerificationCode(email) {
+async function sendVerificationCode(email: string) {
   const key = await crypto.randomBytes(3).toString('hex');
   // TODO: key: only numerical or full alphaNumerical range
 
@@ -37,7 +38,7 @@ async function sendVerificationCode(email) {
   // TODO: add mail queue. return expected send time, last sent, and other shits
 }
 
-async function keyToToken(email, key) {
+async function keyToToken(email: string, key: string) {
   const uEmail = await models.uEmail.findOne({ where: { email, key } });
   if (uEmail == null) throw Error('wrong verification key');
   // TODO: custom error object
@@ -45,11 +46,9 @@ async function keyToToken(email, key) {
   return jwtActivationToken(uEmail.email);
 }
 
-async function createAccount(emailToken, fullName, password) {
-  let transaction;
+async function createAccount(emailToken: string, fullName: string, password: string) {
+  const transaction = await db.transaction();
   try {
-    transaction = await db.transaction();
-
     const { email } = jwt.verify(emailToken, EMAIL_ACTIVATION_SECRET);
 
     const User = await models.User.create(
@@ -61,14 +60,14 @@ async function createAccount(emailToken, fullName, password) {
 
     await transaction.commit();
 
-    return login(User);
+    return login(User, { via: 'email' });
   } catch (err) {
     if (err) transaction.rollback();
     throw err;
   }
 }
 
-async function getUser(email, password) {
+async function getUser(email: string, password: string) {
   const Email = await models.Email.findOne({ where: { email } });
   if (Email == null) { throw new Error('email doesn\'t exist'); }
   // custom error

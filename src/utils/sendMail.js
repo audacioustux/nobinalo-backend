@@ -1,8 +1,6 @@
 import nodeMailer from 'nodemailer';
 import redisClient from './redis';
 
-require('dotenv').config();
-
 const transporter = nodeMailer.createTransport({
   pool: true,
   host: 'smtp.gmail.com',

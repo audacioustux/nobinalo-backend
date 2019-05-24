@@ -1,0 +1,7 @@
+{
+  "SMTP_USER":"example@email.com",
+  "SMTP_PASSWORD":"password",
+  "EMAIL_VERIFICATION_SECRET":"secret len 36 byte",
+  "PHONE_NO_VERIFICATION_SECRET":"secret len 36 byte",
+  "JWT_SECRET":"secret len 33 byte"
+}
