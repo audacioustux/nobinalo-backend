@@ -7,25 +7,19 @@ import config from '../../config';
 import { login } from '../utils';
 
 const { models } = db;
-const { EMAIL_ACTIVATION_SECRET, port } = config;
+const { EMAIL_VERIFICATION_SECRET, PORT } = config;
 
 function jwtActivationToken(email) {
-  return jwt.sign(
-    { email },
-    EMAIL_ACTIVATION_SECRET,
-    { expiresIn: '48h' },
-  );
+  return jwt.sign({ email }, EMAIL_VERIFICATION_SECRET, { expiresIn: '48h' });
 }
 
 async function sendVerificationCode(email: string) {
   const key = await crypto.randomBytes(3).toString('hex');
   // TODO: key: only numerical or full alphaNumerical range
 
-  const [uEmail] = await models.uEmail.findOrBuild(
-    { where: { email }, defaults: { key } },
-  );
+  const [uEmail] = await models.uEmail.findOrBuild({ where: { email }, defaults: { key } });
 
-  const activationLink = `http://localhost:${port}/_v/email/${jwtActivationToken(uEmail.email)}`;
+  const activationLink = `http://localhost:${PORT}/_v/email/${jwtActivationToken(uEmail.email)}`;
   // TODO: fix link for production
 
   await uEmail.save();
@@ -49,12 +43,9 @@ async function keyToToken(email: string, key: string) {
 async function createAccount(emailToken: string, fullName: string, password: string) {
   const transaction = await db.transaction();
   try {
-    const { email } = jwt.verify(emailToken, EMAIL_ACTIVATION_SECRET);
+    const { email } = jwt.verify(emailToken, EMAIL_VERIFICATION_SECRET);
 
-    const User = await models.User.create(
-      { fullName, password },
-      { transaction },
-    );
+    const User = await models.User.create({ fullName, password }, { transaction });
 
     await models.Email.create({ email, UserId: User.id }, { transaction });
 
@@ -69,7 +60,9 @@ async function createAccount(emailToken: string, fullName: string, password: str
 
 async function getUser(email: string, password: string) {
   const Email = await models.Email.findOne({ where: { email } });
-  if (Email == null) { throw new Error('email doesn\'t exist'); }
+  if (Email == null) {
+    throw new Error("email doesn't exist");
+  }
   // custom error
   const User = await models.User.findByPk(Email.UserId);
   await User.checkPassword(password);
@@ -77,8 +70,5 @@ async function getUser(email: string, password: string) {
 }
 
 export {
-  createAccount,
-  sendVerificationCode,
-  keyToToken,
-  getUser,
+  createAccount, sendVerificationCode, keyToToken, getUser,
 };

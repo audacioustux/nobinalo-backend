@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+import {gql} from 'apollo-server-express';
 
 const typeDefs = gql`
   type Query {
@@ -8,7 +8,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    hello: () => 'Hello world!',
+    hello: (): string => 'Hello world!',
   },
 };
 

@@ -7,7 +7,7 @@ client.on('connect', () => {
   process.stdout.write(`redis: ${chalk.green('connected')}\n`);
 });
 
-client.on('error', (err) => {
+client.on('error', err => {
   process.stdout.write(`${chalk.redBright('Error')} ${err}\n`);
 });
 
