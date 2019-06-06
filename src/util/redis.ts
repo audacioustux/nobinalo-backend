@@ -1,14 +1,20 @@
 import redis from 'redis';
-import chalk from 'chalk';
+import logger from './logger';
 
 const client = redis.createClient();
 
-client.on('connect', () => {
-  process.stdout.write(`redis: ${chalk.green('connected')}\n`);
-});
+client.on(
+  'connect',
+  (): void => {
+    logger.info('redis connected');
+  },
+);
 
-client.on('error', err => {
-  process.stdout.write(`${chalk.redBright('Error')} ${err}\n`);
-});
+client.on(
+  'error',
+  (err): void => {
+    logger.error('Redis: ', err);
+  },
+);
 
 export default client;

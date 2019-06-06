@@ -1,5 +1,5 @@
 *
-!/email
+!**/
 !.gitignore
 !**/type.ts
 !**/index.ts

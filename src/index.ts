@@ -1,3 +1,4 @@
+import './appRoot';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -6,17 +7,20 @@ import logger from './util/logger';
 import { Logger } from 'winston';
 // import auth from './auth';
 // import apolloServer from './api';
+// import redis from './util/redis';
 import config from './config';
 
-const { PORT } = config;
+const { PORT, NODE_ENV } = config;
 
 const app = express();
 
-app.use(
-  morgan('combined', {
-    stream: { write: (message): Logger => logger.debug(message.trim()) },
-  }),
-);
+if (NODE_ENV !== 'production') {
+  app.use(
+    morgan('combined', {
+      stream: { write: (message): Logger => logger.info(message.trim()) },
+    }),
+  );
+}
 
 app.use(
   cors({
@@ -32,6 +36,16 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(auth.router);
 
 // apolloServer.applyMiddleware({app});
+
+process.on(
+  'SIGUSR2',
+  (): void => {
+    // kill dash 9 ..or, EADDRINUSE
+    if (process.env.nodemon) {
+      process.exit(0);
+    }
+  },
+);
 
 app.listen(
   PORT,

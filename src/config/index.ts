@@ -1,7 +1,16 @@
-import { Config } from './type';
-if (process.env.NODE_ENV !== 'production') {
-  const [a]: [Config] = [require('./dev').default];
-  console.log(a);
+import mailer from './mailer';
+import RConfig from './type';
+import db from './db';
+
+const { NODE_ENV = 'development' } = process.env;
+
+function getConfig(): RConfig {
+  if (NODE_ENV !== 'production') {
+    return require('./dev').default;
+  }
+  return require('./prod').default;
 }
 
-export default { PORT: 4000 };
+const config = Object.assign(getConfig(), { NODE_ENV, mailer, db });
+
+export default config;
