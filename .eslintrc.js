@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     "no-var": "error",
     "prefer-const": "error",
+    'no-console': 'warn',
     'prefer-destructuring': [
       'error', {
         VariableDeclarator: {

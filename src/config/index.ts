@@ -11,6 +11,10 @@ function getConfig(): RConfig {
   return require('./prod').default;
 }
 
-const config = Object.assign(getConfig(), { NODE_ENV, mailer, db });
+const config = Object.assign(getConfig(), {
+  NODE_ENV,
+  mailer,
+  db,
+});
 
 export default config;

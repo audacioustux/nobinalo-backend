@@ -5,9 +5,7 @@ import express from 'express';
 import morgan from 'morgan';
 import logger from './util/logger';
 import { Logger } from 'winston';
-// import auth from './auth';
-// import apolloServer from './api';
-// import redis from './util/redis';
+import auth from './auth';
 import config from './config';
 
 const { PORT, NODE_ENV } = config;
@@ -33,9 +31,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(auth.router);
-
-// apolloServer.applyMiddleware({app});
+app.use(auth.router);
 
 process.on(
   'SIGUSR2',

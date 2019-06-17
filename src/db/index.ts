@@ -1,6 +1,8 @@
-import { createConnection, Connection } from 'typeorm';
+import Knex from 'knex';
 import config from '../config';
 
-const connection: Connection = createConnection(config.db);
+import { prisma } from './prisma';
 
-export default connection;
+const knex = Knex(config.db);
+
+export { prisma, knex };

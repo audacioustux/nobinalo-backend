@@ -1,1 +1,1 @@
-export { ConnectionOptions as default } from 'typeorm';
+export { Config as default } from 'knex';

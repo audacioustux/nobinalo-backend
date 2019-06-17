@@ -1,5 +1,5 @@
 declare namespace NodeJS {
-  export interface Global {
+  interface Global {
     appRoot: string;
   }
 }
