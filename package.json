@@ -5,11 +5,11 @@
   "private": true,
   "main": "./build/index.js",
   "scripts": {
+    "set-env": "ts-node ./scripts/set-env.ts",
     "ts-watch": "tsc -w",
-    "dev": "concurrently -k -p [{name}] -n ts,dev -c red.bold,cyan npm:ts-watch npm:serve-dev",
+    "dev": "concurrently -k -p [{name}] -n ts,dev -c red.bold,cyan,blue npm:ts-watch npm:serve-dev npm:prisma-dev",
     "serve-dev": "nodemon ./build",
-    "prisma-docker": "docker-compose -f prisma/docker-compose.yml up -d",
-    "typeorm": "ts-node -r \"tsconfig-paths/register\" \"./node_modules/typeorm/cli.js\" --config \"./ormconfig.ts\""
+    "prisma-dev": "prisma2 dev"
   },
   "author": {
     "name": "Tanjim Hosain",
@@ -66,7 +66,7 @@
     "gulp-rename": "^1.4.0",
     "nodemon": "^1.19.1",
     "prettier": "^1.17.1",
-    "prisma": "^1.34.0",
+    "prisma2": "0.0.83",
     "ts-node": "^8.2.0",
     "tsconfig-paths": "^3.8.0",
     "typescript": "^3.6.0-dev.20190606"
