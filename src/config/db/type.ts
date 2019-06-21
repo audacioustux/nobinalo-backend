@@ -1,1 +1,1 @@
-export { Config as default } from 'knex';
+export { Options as default } from 'sequelize';

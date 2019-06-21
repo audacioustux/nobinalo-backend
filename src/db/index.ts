@@ -1,8 +1,21 @@
-import Knex from 'knex';
+import { Sequelize } from 'sequelize';
+import logger from '../util/logger';
 import config from '../config';
 
-import { prisma } from './prisma';
+const sequelize = new Sequelize(config.db);
 
-const knex = Knex(config.db);
+sequelize
+  .authenticate()
+  .then(
+    (): void => {
+      logger.info('Database Connection has been established successfully.', config);
+    },
+  )
+  .catch(
+    (err: Error): void => {
+      logger.error('Unable to connect to the database:', err);
+      process.exit(1);
+    },
+  );
 
-export { prisma, knex };
+export default sequelize;

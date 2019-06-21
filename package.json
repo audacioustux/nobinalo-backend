@@ -7,9 +7,8 @@
   "scripts": {
     "set-env": "ts-node ./scripts/set-env.ts",
     "ts-watch": "tsc -w",
-    "dev": "concurrently -k -p [{name}] -n ts,dev -c red.bold,cyan,blue npm:ts-watch npm:serve-dev npm:prisma-dev",
-    "serve-dev": "nodemon ./build",
-    "prisma-dev": "prisma2 dev"
+    "dev": "concurrently -k -p [{name}] -n ts,dev -c red.bold,cyan,blue npm:ts-watch npm:serve-dev",
+    "serve-dev": "nodemon ./build"
   },
   "author": {
     "name": "Tanjim Hosain",
@@ -38,7 +37,7 @@
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
     "redis": "^2.8.0",
-    "sequelize": "^5.8.10",
+    "sequelize": "^5.8.11",
     "uuid": "^3.3.2",
     "validator": "^11.0.0",
     "winston": "^3.2.1"
