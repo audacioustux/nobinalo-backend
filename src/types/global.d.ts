@@ -3,3 +3,6 @@ declare namespace NodeJS {
     appRoot: string;
   }
 }
+
+type TrueResult = { err: string } | true;
+type BoolResult = { err: string } | boolean;

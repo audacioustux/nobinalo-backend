@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
-import logger from './util/logger';
+import logger from './utils/logger';
 import { Logger } from 'winston';
 import auth from './auth';
 import config from './config';

@@ -17,6 +17,8 @@ module.exports = {
     "no-var": "error",
     "prefer-const": "error",
     'no-console': 'warn',
+    "object-shorthand": "error",
+    "quotes": ["error", "single"],
     'prefer-destructuring': [
       'error', {
         VariableDeclarator: {

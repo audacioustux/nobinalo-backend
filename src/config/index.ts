@@ -1,3 +1,4 @@
+import base from './base';
 import mailer from './mailer';
 import RConfig from './type';
 import db from './db';
@@ -11,7 +12,7 @@ function getConfig(): RConfig {
   return require('./prod').default;
 }
 
-const config = Object.assign(getConfig(), {
+const config = Object.assign(base, getConfig(), {
   NODE_ENV,
   mailer,
   db,

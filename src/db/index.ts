@@ -1,21 +1,6 @@
-import { Sequelize } from 'sequelize';
-import logger from '../util/logger';
-import config from '../config';
+import sequelize from './sequelize';
+import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize(config.db);
+import * as models from './models';
 
-sequelize
-  .authenticate()
-  .then(
-    (): void => {
-      logger.info('Database Connection has been established successfully.', config);
-    },
-  )
-  .catch(
-    (err: Error): void => {
-      logger.error('Unable to connect to the database:', err);
-      process.exit(1);
-    },
-  );
-
-export default sequelize;
+export default { Sequelize, sequelize, models };

@@ -3,3 +3,4 @@
 !.gitignore
 !**/type.ts
 !**/index.ts
+!**/base/**
