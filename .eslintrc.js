@@ -1,19 +1,26 @@
 module.exports = {
   parser: '@typescript-eslint/parser',  // Specifies the ESLint parser
   extends: [
-    'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from
-                                              // the
-                                              // @typescript-eslint/eslint-plugin
-    'prettier/@typescript-eslint',  // Uses eslint-config-prettier to disable
-                                    // ESLint rules from
-                                    // @typescript-eslint/eslint-plugin that
-                                    // would conflict with prettier
-    'plugin:prettier/recommended',  // Enables eslint-plugin-prettier and
-                                    // displays prettier errors as ESLint
-                                    // errors. Make sure this is always the last
-                                    // configuration in the extends array.
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
   ],
+  plugins: ["@typescript-eslint"],
+  parserOptions: {
+    "project": "./tsconfig.json"
+  },
   rules: {
+    "import/newline-after-import": ["error", { "count": 2 }],
+    "import/no-named-as-default": 0,
+    "max-len": ["warn", { "code": 100 }],
+    semi: ["warn", "always"],
+    "semi-style": ["error", "last"],
+    "arrow-parens": ["error", "always"],
+    "arrow-body-style": ["error", "as-needed"],
     "no-var": "error",
     "prefer-const": "error",
     'no-console': 'warn',

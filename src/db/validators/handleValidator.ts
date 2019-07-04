@@ -1,12 +1,23 @@
 import { isLength } from 'validator';
-import config from '../../config';
+import { HandleRegex, MAX_HANDLE_LENGTH, MIN_HANDLE_LENGTH } from './_constants';
+import reservedWords from '../../staticData/reservedWords.json';
+import binarySearch from '../../helpers/binarySearch';
 
-const { MIN_HANDLE_LENGTH, MAX_HANDLE_LENGTH, HandleRegex } = config;
 
-export default (handle: string): TrueResult => {
-  return isLength(handle, MIN_HANDLE_LENGTH, MAX_HANDLE_LENGTH)
-    ? HandleRegex.test(handle)
-      ? true
-      : { err: `regex mismatch: ${HandleRegex.toString()}` }
-    : { err: `length must be between ${MIN_HANDLE_LENGTH} to ${MAX_HANDLE_LENGTH}` };
-};
+const bodyValidator = (handle: string): boolean => HandleRegex.test(handle);
+
+const lengthValidator = (handle: string): boolean =>
+    isLength(handle, MIN_HANDLE_LENGTH, MAX_HANDLE_LENGTH);
+
+export const handleValidator = (handle: string): boolean =>
+    bodyValidator(handle) && lengthValidator(handle);
+
+export const reservedHandles = reservedWords
+    .filter((word): boolean => handleValidator(word))
+    .sort();
+
+export const isReservedHandle = (handle: string): boolean =>
+    binarySearch(reservedHandles, handle);
+
+export default (handle: string): boolean =>
+    handleValidator(handle) && !isReservedHandle(handle);
