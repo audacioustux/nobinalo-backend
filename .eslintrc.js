@@ -17,8 +17,10 @@ module.exports = {
     "import/newline-after-import": ["error", { "count": 2 }],
     "import/no-named-as-default": 0,
     "max-len": ["warn", { "code": 100 }],
-    semi: ["warn", "always"],
+    "semi": "off",
+    "@typescript-eslint/semi": 2,
     "semi-style": ["error", "last"],
+    "semi-spacing": ["error", { "before": false, "after": true }],
     "arrow-parens": ["error", "always"],
     "arrow-body-style": ["error", "as-needed"],
     "no-var": "error",
@@ -26,6 +28,8 @@ module.exports = {
     'no-console': 'warn',
     "object-shorthand": "error",
     "quotes": ["error", "single"],
+    "eol-last": 1,
+    "no-multiple-empty-lines": ["error", { "max": 2, "maxBOF": 0, "maxEOF": 0 }],
     'prefer-destructuring': [
       'error', {
         VariableDeclarator: {

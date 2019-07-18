@@ -1,6 +1,5 @@
-import sequelize from './sequelize';
-import Sequelize from 'sequelize';
+import { Model } from 'objection';
+import knex from './knex';
 
-import * as models from './models';
 
-export default { Sequelize, sequelize, models };
+Model.knex(knex);

@@ -25,6 +25,5 @@
   "[typescriptreact]": {
     "editor.formatOnSave": false
   },
-  "editor.tabSize": 4,
-  "eslint.alwaysShowStatus": true
+  "editor.tabSize": 4
 }
