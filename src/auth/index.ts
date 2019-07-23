@@ -2,6 +2,7 @@
 
 import express from 'express';
 
+
 const router = express.Router();
 // // const { models } = db;
 // router.route('/login')
@@ -14,11 +15,11 @@ const router = express.Router();
 //   });
 
 router.route('/register').get(async (req, res) => {
-  res.json([23239000000000000]);
+    res.json([23239000000000000]);
 });
 
 export default {
-  router,
+    router,
 };
 // // import { register } from './local';
 

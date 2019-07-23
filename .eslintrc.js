@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     "import/newline-after-import": ["error", { "count": 2 }],
     "import/no-named-as-default": 0,
+    "object-curly-spacing": ["error", "always"],
     "max-len": ["warn", { "code": 100 }],
     "semi": "off",
     "@typescript-eslint/semi": 2,
@@ -29,6 +30,7 @@ module.exports = {
     "object-shorthand": "error",
     "quotes": ["error", "single"],
     "eol-last": 1,
+    "@typescript-eslint/no-explicit-any": 0,
     "no-multiple-empty-lines": ["error", { "max": 2, "maxBOF": 0, "maxEOF": 0 }],
     'prefer-destructuring': [
       'error', {

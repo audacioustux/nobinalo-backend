@@ -1,5 +1,6 @@
-export default interface RConfig {
+export default interface Config {
     SSL: boolean;
+    NODE_ENV: string;
     PORT: number;
     HOST: string;
     EMAIL_VERIFICATION_SECRET: string;
