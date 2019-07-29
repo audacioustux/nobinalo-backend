@@ -1,5 +1,5 @@
 module.exports = {
-  service: {
-    name: 'audacioustux-8421',
-  },
+    service: {
+        name: 'audacioustux-8421',
+    },
 };

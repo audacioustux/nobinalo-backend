@@ -1,10 +1,19 @@
 version: '3'
 
 services:
-  server:
-    image: server
-    build: .
+  postgres:
+    image: postgres:12
     environment:
-      NODE_ENV: production
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: nobinalo
     ports:
-      - 4081:4081
+      - '5432:5432'
+
+  redis:
+    image: redis:32bit
+    ports:
+      - '6379:6379'
+
+volumes:
+  postgres:

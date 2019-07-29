@@ -1,5 +1,5 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',  // Specifies the ESLint parser
+  parser: '@typescript-eslint/parser',
   extends: [
     "airbnb-base",
     "eslint:recommended",
@@ -14,6 +14,7 @@ module.exports = {
     "project": "./tsconfig.json"
   },
   rules: {
+    "no-dupe-keys": "error",
     "import/newline-after-import": ["error", { "count": 2 }],
     "import/no-named-as-default": 0,
     "object-curly-spacing": ["error", "always"],

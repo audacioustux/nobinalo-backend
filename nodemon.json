@@ -4,6 +4,6 @@
   "env": {
     "nodemon": true
   },
-  "exec": "npm run ts-build; npm start",
+  "exec": "npm run build:ts; npm start",
   "ext": "ts"
 }

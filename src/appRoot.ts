@@ -1,4 +1,6 @@
 import path from 'path';
 
 
-Object.assign(global, { appRoot: path.resolve(__dirname) });
+const appRoot = path.resolve(__dirname);
+
+export default appRoot;
