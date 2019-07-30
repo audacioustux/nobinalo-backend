@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "nobinalo.com backend",
   "private": true,
-  "main": "./build/src/index.js",
+  "main": "./build/index.js",
   "scripts": {
     "watch:ts": "tsc -w -p tsconfig.json --preserveWatchOutput",
     "build:ts": "tsc -p tsconfig.json",
     "build": "npm run ts-build",
-    "start": "node ./build/src",
+    "start": "node ./build",
     "start:watch": "nodemon",
     "dev": "npm run start:watch",
     "upgrade": "ncu"

@@ -18,7 +18,11 @@ module.exports = {
     "import/newline-after-import": ["error", { "count": 2 }],
     "import/no-named-as-default": 0,
     "object-curly-spacing": ["error", "always"],
-    "max-len": ["warn", { "code": 100 }],
+    "max-len": ["warn", { 
+      "code": 100, 
+      "ignoreRegExpLiterals": true, 
+      "ignoreUrls": true,
+    }],
     "semi": "off",
     "@typescript-eslint/semi": 2,
     "semi-style": ["error", "last"],

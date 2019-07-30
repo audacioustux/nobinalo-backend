@@ -4,7 +4,7 @@ import { transports, createLogger, format } from 'winston';
 const config = {
     combined: {
         filename: './logs/combined.log',
-        maxsize: 5242880, // 5MB
+        maxsize: 1048576, // 5MB
         maxFiles: 20,
     },
     uncaught: { filename: './logs/uncaught.log' },
@@ -13,7 +13,9 @@ const config = {
             format.colorize(),
             format.timestamp(),
             format.align(),
-            format.printf((info): string => `${info.timestamp} ${info.level}: ${info.message}`),
+            format.printf(
+                (info): string => `${info.timestamp} ${info.level}: ${info.message}`,
+            ),
         ),
         handleExceptions: true,
     },
