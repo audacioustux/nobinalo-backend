@@ -1,12 +1,32 @@
 {
   "Print to console": {
     "prefix": "log",
-    "body": ["console.log($1);"],
+    "body": [
+      "console.log($1);"
+    ],
     "description": "Log output to console"
   },
   "Print to console error": {
     "prefix": "error",
-    "body": ["console.error($1);"],
+    "body": [
+      "console.error($1);"
+    ],
     "description": "Log error output to console"
+  },
+  "knex migration": {
+    "prefix": "knex migration",
+    "body": [
+      "import * as Knex from 'knex';\n\n",
+      "export async function up(knex: Knex): Promise<any> {",
+      "\tawait knex.schema.createTable('$1', (table): void => {",
+      "\t\ttable.uuid('uuid').notNullable().defaultTo(knex.raw('uuid_generate_v1mc()')).primary();",
+      "\t\ttable.timestamps(false, true);",
+      "\t\t$0",
+      "\t});",
+      "}",
+      "\nexport async function down(knex: Knex): Promise<any> {",
+      "\tawait knex.schema.dropTable('$1');",
+      "}"
+    ]
   }
 }

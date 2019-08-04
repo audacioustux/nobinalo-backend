@@ -10,8 +10,10 @@
     "build": "npm run ts-build",
     "start": "node ./build",
     "start:watch": "nodemon",
-    "dev": "npm run start:watch",
-    "upgrade": "ncu"
+    "dev": "npm run docker && npm run start:watch",
+    "upgrade": "ncu",
+    "docker:up": "docker-compose up -d",
+    "docker:reset": "docker-compose rm -sf && npm run docker:up"
   },
   "author": {
     "name": "Tanjim Hosain",
@@ -44,6 +46,7 @@
     "objection": "^1.6.9",
     "pg": "^7.12.0",
     "pg-hstore": "^2.3.3",
+    "r": "0.0.5",
     "redis": "^2.8.0",
     "uuid": "^3.3.2",
     "validator": "^11.1.0",
@@ -74,6 +77,7 @@
     "gulp": "^4.0.2",
     "gulp-rename": "^1.4.0",
     "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
     "typescript": "^3.6.0-dev.20190606"
   }
 }
