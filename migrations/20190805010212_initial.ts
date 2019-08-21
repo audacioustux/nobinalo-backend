@@ -33,7 +33,6 @@ export async function up(knex: Knex): Promise<any> {
         table.timestamps(false, true);
 
         table.unique(['user_uuid', 'is_primary']);
-        table.unique(['user_uuid', 'for_backup']);
     });
 
     await knex.schema.createTable('uEmail', (table): void => {

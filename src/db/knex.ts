@@ -7,4 +7,4 @@ const knex = Knex(config.db);
 
 knex.migrate.latest().then((): void => { logger.info('Migrated.'); });
 
-export default knex; 
+export default knex;

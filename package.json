@@ -10,7 +10,7 @@
     "build": "npm run ts-build",
     "start": "node ./build",
     "start:watch": "nodemon",
-    "dev": "npm run docker && npm run start:watch",
+    "dev": "npm run docker:reset && npm run start:watch",
     "upgrade": "ncu",
     "docker:up": "docker-compose up -d",
     "docker:reset": "docker-compose rm -sf && npm run docker:up"
