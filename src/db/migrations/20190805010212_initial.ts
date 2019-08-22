@@ -9,13 +9,11 @@ export async function up(knex: Knex): Promise<any> {
             table.string('password_hash', 128).notNullable();
 
             table.text('bio');
-            table.string('full_name', 128);
-            table.string('nick_name', 48);
-            table.jsonb('avatar');
+            table.string('name', 160);
             table.string('gender', 1);
 
             table.timestamps(false, true);
-            table.time('last_logged_at');
+            table.timestamp('last_logged_at', { useTz: true });
         });
 
     await knex.schema.createTable('email', (table): void => {

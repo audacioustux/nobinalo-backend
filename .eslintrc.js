@@ -36,6 +36,8 @@ module.exports = {
     "quotes": ["error", "single"],
     "eol-last": 1,
     "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
     "no-multiple-empty-lines": ["error", { "max": 2, "maxBOF": 0, "maxEOF": 0 }],
     'prefer-destructuring': [
       'error', {

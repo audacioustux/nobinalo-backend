@@ -1,9 +1,11 @@
 {
-  "watch": ["src"],
+  "watch": [
+    "src"
+  ],
   "verbose": false,
   "env": {
     "nodemon": true
   },
-  "exec": "npm run build:ts; npm start",
+  "exec": "npm run build:ts && npm start",
   "ext": "ts"
 }

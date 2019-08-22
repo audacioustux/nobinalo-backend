@@ -10,7 +10,7 @@ const validator = yup.object().shape({
 
 const secrets = validator.validateSync(getSecretJSON('base'));
 
-const { NODE_ENV = 'production', PORT = 3000 } = process.env;
+const { NODE_ENV = 'production', PORT = 4000 } = process.env;
 
 const config = {
     NODE_ENV,
