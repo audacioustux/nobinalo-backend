@@ -1,15 +1,18 @@
 import { Config } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
+import path from 'path';
 import logger from '../utils/logger';
 import { getSecretJSON } from './util';
+import appRoot from '../appRoot';
 
 
 const config: Config = {
     migrations: {
-        directory: '../db/migrations',
+        directory: path.resolve(appRoot, '../migrations'),
+        extension: '.ts',
     },
     seeds: {
-        directory: '../db/seeds/dev',
+        directory: path.resolve(appRoot, '../seeds/dev'),
     },
     log: {
         warn: (message): void => { logger.warn(message); },
@@ -17,8 +20,15 @@ const config: Config = {
         deprecate: (message): void => { logger.warn(message); },
         debug: (message): void => { logger.debug(message); },
     },
+    client: 'pg',
+    connection: {
+        host: '127.0.0.1',
+        user: 'postgres',
+        password: 'docker',
+        database: 'nobinalo',
+    },
+
     ...knexSnakeCaseMappers(),
-    ...getSecretJSON('db'),
 };
 
 export default config;

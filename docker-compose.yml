@@ -1,17 +1,21 @@
-version: '3'
+version: '3.7'
 
 services:
   postgres:
     image: postgres:12
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
-      POSTGRES_DB: nobinalo
+    secrets:
+      - source: db_secrets
+        target: db_secrets.env
     ports:
       - '5432:5432'
     tmpfs: /var/lib/postgresql/data
-
+    entrypoint: ["/bin/bash" , "-c", "env $$(paste /run/secrets/*.env -s -d '\n' | grep -v '^#' | xargs) /docker-entrypoint.sh postgres"]
+    command: postgres
   redis:
     image: redis:32bit
     ports:
       - '6379:6379'
+
+secrets:
+  db_secrets:
+    file: ./secrets/db.env
