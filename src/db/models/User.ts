@@ -1,6 +1,5 @@
 import { Model, RelationMappings } from 'objection';
 
-
 export interface Address {
     street: string;
     city: string;
@@ -42,12 +41,11 @@ export default class Person extends Model {
                 properties: {
                     street: { type: 'string' },
                     city: { type: 'string' },
-                    zipCode: { type: 'string' },
-                },
-            },
-        },
+                    zipCode: { type: 'string' }
+                }
+            }
+        }
     };
 
-    static relationMappings: RelationMappings = {
-    };
+    static relationMappings: RelationMappings = {};
 }

@@ -1,6 +1,3 @@
-import mailer from './mailer';
-import db from './db';
-import base from './base';
+import Config from './config';
 
-
-export default Object.assign({}, base, { mailer, db });
+export default new Config();

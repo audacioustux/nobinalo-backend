@@ -6,6 +6,13 @@
     ],
     "description": "Log output to console"
   },
+  "Init debug instance": {
+    "prefix": "debug",
+    "body": [
+      "const debug = require('debug')('$1');"
+    ],
+    "description": "Init debug instance"
+  },
   "Print to console error": {
     "prefix": "error",
     "body": [

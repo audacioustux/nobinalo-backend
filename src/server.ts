@@ -1,24 +1,18 @@
-import config from './config';
 import app from './app';
-import logger from './utils/logger';
+import { isPort } from 'validator';
+import Debug from 'debug';
 
+const debug = Debug('server');
 
-const { PORT, HOST } = config;
+const PORT =
+    process.env.PORT && isPort(process.env.PORT)
+        ? parseInt(process.env.PORT, 10)
+        : 8080;
+const { HOSTNAME = '0.0.0.0' } = process.env;
 
-const server = app.listen(PORT, HOST);
-
+const server = app.listen(PORT, HOSTNAME);
 server.on('listening', () => {
-    logger.info(`Node.js API server is listening on http://${HOST}:${PORT}/`);
+    debug(`listening to http://${HOSTNAME}:${PORT}/api`);
 });
 
-server.on('close', () => {
-    logger.info(`Node.js API server stopped listening on http://${HOST}:${PORT}/`);
-});
-
-process.once('SIGUSR2', () => {
-    if (process.env.nodemon) {
-        server.close(() => {
-            process.kill(process.pid, 'SIGUSR2');
-        });
-    }
-});
+export default server;

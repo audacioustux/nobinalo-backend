@@ -1,7 +1,7 @@
 import { isLength, isNumeric } from 'validator';
 import { MIN_PASS_LENGTH } from './_constants';
 import commonPasswords from '../../staticData/commonPasswords.json';
-import binarySearch from '../../helpers/binarySearch';
+import binarySearch from '../../utils/binarySearch';
 
 
 const passwordValidator = (rawPassword: string): boolean => isLength(

@@ -5,7 +5,7 @@ import {
     MIN_HANDLE_LENGTH,
 } from './_constants';
 import reservedWords from '../../staticData/reservedWords.json';
-import binarySearch from '../../helpers/binarySearch';
+import binarySearch from '../../utils/binarySearch';
 
 
 const bodyValidator = (handle: string): boolean => HandleRegex.test(handle);
