@@ -6,7 +6,7 @@
         "target": "esnext",
         "noImplicitAny": true,
         "removeComments": true,
-        "preserveConstEnums": true,
+        // "preserveConstEnums": true,
         "strict": true,
         "resolveJsonModule": true,
         "strictNullChecks": true,

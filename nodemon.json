@@ -8,6 +8,6 @@
     "nodemon": true,
     "PORT": 4000
   },
-  "exec": "npm run build && ./scripts/wait-port.sh $PORT && DEBUG=* npm start",
+  "exec": "npm run build && ./scripts/wait-port.sh $PORT && npm start",
   "ext": "ts"
 }

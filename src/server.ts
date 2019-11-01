@@ -1,18 +1,15 @@
 import app from './app';
-import { isPort } from 'validator';
 import Debug from 'debug';
+import config from './config';
 
 const debug = Debug('server');
 
-const PORT =
-    process.env.PORT && isPort(process.env.PORT)
-        ? parseInt(process.env.PORT, 10)
-        : 8080;
-const { HOSTNAME = '0.0.0.0' } = process.env;
+const { PORT } = config;
 
-const server = app.listen(PORT, HOSTNAME);
+const server = app.listen(PORT);
+
 server.on('listening', () => {
-    debug(`listening to http://${HOSTNAME}:${PORT}/api`);
+    debug(`listening to Port: ${PORT}`);
 });
 
 export default server;
