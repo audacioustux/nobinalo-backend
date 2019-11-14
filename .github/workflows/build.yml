@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: lint (eslint)
+      run: |
+        npm install
+        npm run build
+        npx eslint . --ext ts,js --ignore-pattern node_modules/
+    - name: tsc (typescript build)
+      run: npm run build
