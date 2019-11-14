@@ -1,11 +1,14 @@
 import * as Knex from 'knex';
 
-
-export async function up(knex: Knex): Promise<any> {
-    await knex.schema.raw('create extension if not exists "uuid-ossp"')
-        .createTable('user', (table): void => {
-            table.uuid('uuid').notNullable().defaultTo(knex.raw('uuid_generate_v1mc()')).primary();
-            table.string('handle', 48).notNullable();
+export async function up(knex: Knex) {
+    await knex.schema
+        .raw('create extension if not exists "uuid-ossp"')
+        .createTable('user', table => {
+            table.uuid('uuid').primary();
+            table
+                .string('handle', 48)
+                .notNullable()
+                .index();
             table.string('password_hash', 128).notNullable();
 
             table.text('bio');
@@ -16,9 +19,13 @@ export async function up(knex: Knex): Promise<any> {
             table.timestamp('last_logged_at', { useTz: true });
         });
 
-    await knex.schema.createTable('email', (table): void => {
+    await knex.schema.createTable('email', table => {
         table.string('email', 255).primary();
-        table.uuid('user_uuid').notNullable().references('uuid').inTable('user')
+        table
+            .uuid('user_uuid')
+            .notNullable()
+            .references('uuid')
+            .inTable('user')
             .onDelete('CASCADE')
             .onUpdate('CASCADE')
             .index();
@@ -33,7 +40,7 @@ export async function up(knex: Knex): Promise<any> {
         table.unique(['user_uuid', 'is_primary']);
     });
 
-    await knex.schema.createTable('uEmail', (table): void => {
+    await knex.schema.createTable('uEmail', table => {
         table.timestamps(false, true);
         table.string('email', 255).primary();
         table.string('key').notNullable();
@@ -41,7 +48,7 @@ export async function up(knex: Knex): Promise<any> {
     });
 }
 
-export async function down(knex: Knex): Promise<any> {
+export async function down(knex: Knex) {
     await knex.schema.dropTable('email');
     await knex.schema.dropTable('uEmail');
     await knex.schema.dropTable('user');

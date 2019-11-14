@@ -1,5 +1,6 @@
 import Debug from 'debug';
 import redis from './redis';
+import db from './db';
 import server from './server';
 
 const debug = Debug('process');
@@ -8,7 +9,7 @@ const debug = Debug('process');
 process.once('exit', (code: number) => {
     debug(`Exiting with exitCode: ${code}, freeing up resources...`);
 
-    const actions = [server.close, redis.quit];
+    const actions = [server.close, redis.quit, db.destroy];
     actions.forEach((close, i) => {
         try {
             close(() => {
@@ -20,16 +21,14 @@ process.once('exit', (code: number) => {
     });
 });
 
-process.once('uncaughtException', async err => {
+process.once('uncaughtException', err => {
     // eslint-disable-next-line no-console
     console.error('Uncaught exception', err);
     process.exit(1);
 });
 
-process.once('unhandledRejection', async (reason, promise) => {
+process.once('unhandledRejection', (reason, promise) => {
     // eslint-disable-next-line no-console
-    console.error(
-        `Unhandled rejection\npromise: ${promise}\nreason: ${reason}`
-    );
+    console.error(`Unhandled rejection\npromise: ${promise}\nreason: ${reason}`);
     process.exit(1);
 });

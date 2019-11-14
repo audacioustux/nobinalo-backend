@@ -25,6 +25,5 @@
     "[typescriptreact]": {
         "editor.formatOnSave": false
     },
-    "editor.tabSize": 4,
-    "prettier.tabWidth": 4
+    "editor.tabSize": 4
 }

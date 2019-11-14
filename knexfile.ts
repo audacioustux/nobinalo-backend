@@ -1,1 +1,3 @@
-module.exports = require('./src/config').default.db;
+import { knexConfig } from './src/db/knex';
+
+module.exports = knexConfig;
