@@ -16,6 +16,6 @@ jobs:
         run: |
           npm install
           npm run build
-          npx run lint
+          npm run lint
       - name: tsc (typescript build)
         run: npm run build
