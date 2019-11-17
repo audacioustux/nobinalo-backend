@@ -29,5 +29,6 @@ jobs:
           git rm --cached package.json package-lock.json
           git rm . -r
           git add dist
+          git commit -m "balamar"
           heroku git:remote -a $HEROKU_APP_NAME
           git push heroku master
