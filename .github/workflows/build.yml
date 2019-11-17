@@ -19,18 +19,4 @@ jobs:
           npm run lint
       - name: tsc (typescript build)
         run: npm run build
-      - name: GitHub Action for Heroku
-        uses: actions/heroku@1.0.0
-      - name: deploy
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_SEC }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
-          git rm --cached package.json package-lock.json
-          git rm . -r
-          git add dist
-          git commit -m "balamar"
-          heroku git:remote -a $HEROKU_APP_NAME
-          git push heroku master
+      
