@@ -19,3 +19,4 @@ jobs:
           npm run lint
       - name: build
         run: npm run build
+      
