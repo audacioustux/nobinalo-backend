@@ -3,7 +3,7 @@ import crypto from 'crypto';
 const { NODE_ENV = 'production' } = process.env;
 
 const isDev = NODE_ENV === 'development';
-
+console.log(NODE_ENV, process.env.nodemon);
 // safe for all environment
 const safeDefs: NodeJS.ProcessEnv = {
     PORT: '4000',
