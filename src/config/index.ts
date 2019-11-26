@@ -16,9 +16,8 @@ const prodDefs: NodeJS.ProcessEnv = { ...safeDefs };
 const devDefs: NodeJS.ProcessEnv = {
     ...safeDefs,
     CORS_WHITELIST: '*',
-    PG_CONNECTION_STRING: 'postgres://postgres:password@localhost:5432/nobinalo',
-    REDIS_CONNECTION_STRING: 'redis://127.0.0.1:6379',
-    SENDGRID_API_KEY: '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',
+    PG_CONNECTION_STRING: 'postgres://postgres:password@postgres/nobinalo',
+    REDIS_CONNECTION_STRING: 'redis://redis',
     EMAIL_VERIFICATION_SECRET: crypto.randomBytes(48).toString('base64'),
     PHONE_NO_VERIFICATION_SECRET: crypto.randomBytes(48).toString('base64'),
     AUTH_JWT_SECRET: crypto.randomBytes(33).toString('base64'),

@@ -89,12 +89,14 @@
     "@types/validator": "^10.11.3",
     "@types/yup": "^0.26.24",
     "@typescript-eslint/parser": "^2.5.0",
+    "cli-spinners": "^2.2.0",
     "concurrently": "^5.0.0",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.1",
+    "find-process": "^1.4.3",
     "gulp": "^4.0.2",
     "gulp-rename": "^1.4.0",
     "jest": "^24.9.0",
@@ -102,6 +104,7 @@
     "prettier": "1.18.2",
     "prettier-eslint": "^9.0.0",
     "ts-node": "^8.4.1",
-    "typescript": "^3.7.1-rc"
+    "typescript": "^3.7.1-rc",
+    "wait-port": "^0.2.6"
   }
 }

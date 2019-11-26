@@ -16,6 +16,6 @@
     "PORT": 4000,
     "DEBUG": "*"
   },
-  "exec": "npm run build && ./scripts/wait-port.sh $PORT && npm start",
+  "exec": "npm run build && npm start",
   "ext": "js,json,ts"
 }

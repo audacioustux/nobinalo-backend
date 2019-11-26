@@ -1,8 +1,13 @@
 {
+    // tsconfig.json
+    // NOTE: this configuration is only for linting and compatibility
+    // with cli tools or packages, e.g. knex cli (.ts)
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "trash"
-        // should never be compiled;
-        // only for linting and compatibility
+        "declaration": false,
+        "incremental": false,
+        "sourceMap": false,
+        "outDir": "/tmp/shits"
+        // should never be compiled anyway
     }
 }
