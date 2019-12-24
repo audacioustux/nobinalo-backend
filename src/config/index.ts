@@ -3,7 +3,7 @@ import crypto from 'crypto';
 const { NODE_ENV = 'production' } = process.env;
 
 const isDev = NODE_ENV === 'development';
-console.log(NODE_ENV, process.env.nodemon);
+
 // safe for all environment
 const safeDefs: NodeJS.ProcessEnv = {
     PORT: '4000',
@@ -16,8 +16,9 @@ const prodDefs: NodeJS.ProcessEnv = { ...safeDefs };
 const devDefs: NodeJS.ProcessEnv = {
     ...safeDefs,
     CORS_WHITELIST: '*',
-    PG_CONNECTION_STRING: 'postgres://postgres:password@postgres/nobinalo',
     REDIS_CONNECTION_STRING: 'redis://redis',
+    PG_CONNECTION_STRING: 'postgres://postgres:password@postgres/nobinalo',
+    ES_NODE: 'http://elasticsearch:9200',
     EMAIL_VERIFICATION_SECRET: crypto.randomBytes(48).toString('base64'),
     PHONE_NO_VERIFICATION_SECRET: crypto.randomBytes(48).toString('base64'),
     AUTH_JWT_SECRET: crypto.randomBytes(33).toString('base64'),
@@ -45,6 +46,7 @@ const {
     EMAIL_VERIFICATION_SECRET,
     PHONE_NO_VERIFICATION_SECRET,
     AUTH_JWT_SECRET,
+    ES_NODE,
 } = env;
 
 const config = {
@@ -63,6 +65,9 @@ const config = {
         connection: PG_CONNECTION_STRING,
     },
     redis: { REDIS_CONNECTION_STRING },
+    elasticsearch: {
+        node: ES_NODE,
+    },
     sendgrid: {
         SENDGRID_API_KEY,
     },

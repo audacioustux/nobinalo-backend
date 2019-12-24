@@ -8,8 +8,12 @@
     "**/*.spec.ts",
     "**/*.test.ts",
     ".git",
-    "node_modules/**/node_modules"
+    "**/node_modules"
   ],
-  "exec": "npm run build && ./export.sh .env npm start",
+  "env": {
+    "nodemon": 1,
+    "DEBUG": "*"
+  },
+  "exec": "npm run build && ./bin/export.sh .env npm start",
   "ext": "js,json,ts"
 }

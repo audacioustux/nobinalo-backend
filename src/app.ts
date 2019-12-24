@@ -4,6 +4,7 @@ import express from 'express';
 import apolloServer from './graphql';
 import tooBusy from './middleware/tooBusy';
 import config from './config';
+import libreCat from './librecat/routes';
 
 const {
     cors: { whitelist },
@@ -15,13 +16,7 @@ app.use(tooBusy);
 
 app.use(
     cors({
-        origin(origin, callback) {
-            if (!origin || whitelist.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: whitelist,
         credentials: true,
     }),
 );
@@ -30,6 +25,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-apolloServer.applyMiddleware({ app, path: '/api' });
+app.use(libreCat);
+
+apolloServer.applyMiddleware({ app, path: '/graphql' });
 
 export default app;

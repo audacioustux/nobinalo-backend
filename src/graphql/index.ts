@@ -3,5 +3,6 @@ import { default as typeDefs } from './schema';
 
 export default new ApolloServer({
     typeDefs,
+    resolvers: {},
     context: {},
 });

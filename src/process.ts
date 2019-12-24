@@ -24,11 +24,11 @@ process.once('exit', (code: number) => {
 process.once('uncaughtException', err => {
     // eslint-disable-next-line no-console
     console.error('Uncaught exception', err);
-    process.exit(1);
+    // process.exit(1);
 });
 
 process.once('unhandledRejection', (reason, promise) => {
     // eslint-disable-next-line no-console
     console.error(`Unhandled rejection\npromise: ${promise}\nreason: ${reason}`);
-    process.exit(1);
+    // process.exit(1);
 });

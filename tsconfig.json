@@ -1,13 +1,15 @@
 {
     // tsconfig.json
     // NOTE: this configuration is only for linting and compatibility
-    // with cli tools or packages, e.g. knex cli (.ts)
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "declaration": false,
         "incremental": false,
+        "allowJs": true,
+        "checkJs": true,
         "sourceMap": false,
-        "outDir": "/tmp/shits"
+        "outDir": "/tmp/trash"
         // should never be compiled anyway
-    }
+    },
+    "exclude": ["**/dist/**/*", "**/node_modules/**/*", "**/*.spec.ts"]
 }
