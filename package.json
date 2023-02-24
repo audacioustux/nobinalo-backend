@@ -69,7 +69,7 @@
     "pug": "^2.0.4",
     "ramda": "^0.26.1",
     "redis": "^2.8.0",
-    "sequelize": "^5.21.2",
+    "sequelize": "^6.29.0",
     "sonic-channel": "^1.2.5",
     "toobusy-js": "^0.5.1",
     "uuid": "^3.3.3",
